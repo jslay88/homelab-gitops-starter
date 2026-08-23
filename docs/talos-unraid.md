@@ -2,7 +2,9 @@
 
 Stand up a Kubernetes cluster as **Unraid VMs** running [Talos Linux](https://www.talos.dev/). Then [bootstrap Argo CD](bootstrap.md). Do not install Ubuntu “and then kubeadm” on these VMs.
 
-**Target topology:** 1 control plane + 1 worker. Add workers later with the same `worker.yaml`.
+**Target topology:** one control plane (`talos-cp-01` at `10.0.0.11`) + one worker (`talos-worker-01` at `10.0.0.21`). We say **control plane / CP**, not master.
+
+Reserve `.11`–`.19` for CP nodes and `.21`–`.29` for workers even if you only boot one of each. [Addressing](addressing.md) covers the map and **1 vs 3 control-plane** tradeoffs (skip two — etcd quorum). Adding a worker later is another VM + `worker.yaml`, not a re-bootstrap.
 
 On a **single worker**, Longhorn default replica count must be **1**. Three replicas need three schedulable disks.
 
@@ -65,11 +67,11 @@ Use that as `--install-image`.
 The YAML below is **patches**. Talos merges them into `_out/controlplane.yaml` and `_out/worker.yaml`.
 
 ```bash
-export CLUSTER_NAME="k8s"
-export CP_IP="192.168.1.10"
-export WORKER_IP="192.168.1.11"
+export CLUSTER_NAME="homelab"
+export CP_IP="10.0.0.11"
+export WORKER_IP="10.0.0.21"
 export INSTALL_IMAGE="factory.talos.dev/installer/<SCHEMATIC_ID>:v1.12.x"
-export GATEWAY="192.168.1.1"
+export GATEWAY="10.0.0.1"
 
 mkdir -p ~/talos/${CLUSTER_NAME}/patches && cd ~/talos/${CLUSTER_NAME}
 ```
@@ -97,21 +99,25 @@ machine:
 
 If the worker has a **second** disk for Longhorn, add a user volume / mount for that disk in a worker-only patch after you see the device name (`talosctl get disks --insecure --nodes $WORKER_IP`). A single-disk lab can keep `/var/lib/longhorn` on the OS disk.
 
-**`patches/controlplane-network.yaml`** / **`patches/worker-network.yaml`**: static IP + gateway + nameservers. Nameservers must be the **LAN resolver** (router / Pi-hole), the same one that [forwards `k8s.home.example.com` to BIND](dns.md). If you only set `8.8.8.8`, nodes and pods cannot resolve internal Ingress hosts. Skip the static-IP block if DHCP is fine, but still check what DHCP hands out for DNS.
+**`patches/controlplane-network.yaml`** (CP only) and **`patches/worker-network.yaml`** (workers only): same shape, **different address**. Nameservers must be the **LAN resolver** (router / Pi-hole), the same one that [forwards `k8s.home.example.com` to BIND](dns.md). If you only set `8.8.8.8`, nodes and pods cannot resolve internal Ingress hosts. Skip the static-IP block if DHCP is fine, but still check what DHCP hands out for DNS — and keep those leases out of the reserved blocks.
 
 ```yaml
+# patches/controlplane-network.yaml  →  10.0.0.11
+# patches/worker-network.yaml       →  10.0.0.21  (not .12)
 machine:
   network:
     interfaces:
       - interface: eth0
         addresses:
-          - 192.168.1.10/24
+          - 10.0.0.11/24
         routes:
           - network: 0.0.0.0/0
-            gateway: 192.168.1.1
+            gateway: 10.0.0.1
     nameservers:
-      - 192.168.1.1
+      - 10.0.0.1
 ```
+
+A second worker is a **new** `worker-network` patch (or a third file) with `10.0.0.22`, not an edit that steals `.12` from the CP block.
 
 Confirm the NIC name:
 

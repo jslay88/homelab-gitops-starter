@@ -6,7 +6,7 @@ Expected Secret keys (chart-dependent; confirm against csi-s3 0.43.x):
 stringData:
   accessKeyID: CHANGEME
   secretAccessKey: CHANGEME
-  endpoint: http://192.168.1.2:9000
+  endpoint: http://10.0.0.2:9000
 ```
 
 Seal into `kube-system` as `csi-s3-secret`.

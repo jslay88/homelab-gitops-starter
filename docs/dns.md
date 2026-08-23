@@ -6,7 +6,7 @@ Wave 6 only installs [external-dns](https://kubernetes-sigs.github.io/external-d
 
 ## What “local routing” means here
 
-A browser on the LAN does **not** talk to a Kubernetes Service name (`grafana.monitoring.svc`). It talks to a **DNS name you chose**, which must resolve to a **LAN IP** that MetalLB gave the ingress controller (or another LoadBalancer).
+A browser on the LAN does **not** talk to a Kubernetes Service name (`grafana.monitoring.svc`). It talks to a **DNS name you chose**, which must resolve to a **LAN IP** that MetalLB gave the ingress controller (or another LoadBalancer). In the examples that VIP is `10.0.0.30` — reserved in [addressing](addressing.md), not a control-plane or worker address.
 
 ```mermaid
 sequenceDiagram
@@ -19,7 +19,7 @@ sequenceDiagram
 
   Laptop->>Resolver: A grafana.k8s.home.example.com
   Resolver->>Auth: recurse or forward that zone
-  Auth-->>Laptop: 192.168.1.200
+  Auth-->>Laptop: 10.0.0.30
   Laptop->>VIP: HTTPS SNI grafana.k8s.home.example.com
   VIP->>Nginx: same
   Nginx->>Pod: HTTP to Service
@@ -56,7 +56,7 @@ BIND (or Knot, PowerDNS, Windows DNS — anything that speaks **RFC2136 + TSIG**
 Laptop DHCP DNS ──► router or Pi-hole (recursive)
                          │
                          │ stub / domain override:
-                         │   k8s.home.example.com → 192.168.1.2
+                         │   k8s.home.example.com → 10.0.0.2
                          ▼
                     BIND on Unraid :53
                     (authoritative only, recursion no)
@@ -65,7 +65,7 @@ Laptop DHCP DNS ──► router or Pi-hole (recursive)
 - DHCP still hands out the router (or Pi-hole) as the only resolver. You do not change every client.
 - You **must** add a domain override / stub / forwarder on that resolver for `k8s.home.example.com` (and `home.example.com` if you use it).
 - OPNsense: **Services → Unbound → Overrides → Domain** (or a forwarding zone) pointing at the BIND IP.
-- Pi-hole v6 / dnsmasq: `server=/k8s.home.example.com/192.168.1.2`
+- Pi-hole v6 / dnsmasq: `server=/k8s.home.example.com/10.0.0.2`
 - Unifi: local DNS record is per-host; a full zone usually means you run BIND anyway and forward from the gateway.
 
 ### B — BIND is the LAN resolver
@@ -110,9 +110,9 @@ The **secret** is what you later `kubeseal` into `external-dns` as Secret `tsig`
 ```text
 options {
     directory "/var/cache/bind";
-    listen-on { 192.168.1.2; };
+    listen-on { 10.0.0.2; };
     listen-on-v6 { none; };
-    allow-query { 192.168.1.0/24; };
+    allow-query { 10.0.0.0/24; };
     recursion no;                 // topology A
     dnssec-validation no;         // lab; enable later if you want
 };
@@ -131,7 +131,7 @@ zone "k8s.home.example.com" {
 
 `update-policy grant … zonesub ANY` lets that TSIG key create/delete **any** record under the zone (A, TXT, and the `external-dns-` TXT ownership records). That is what external-dns needs.
 
-`allow-update { key "externaldns-key"; };` also works. Do **not** `allow-update { 192.168.1.0/24; }` without TSIG on a homelab you do not fully trust.
+`allow-update { key "externaldns-key"; };` also works. Do **not** `allow-update { 10.0.0.0/24; }` without TSIG on a homelab you do not fully trust.
 
 ### 3. Zone file
 
@@ -143,7 +143,7 @@ $TTL 60
     IN NS  ns.home.example.com.
 
 ; optional static pin so ingress works before the first external-dns run
-*.k8s.home.example.com.  IN A  192.168.1.200
+*.k8s.home.example.com.  IN A  10.0.0.30
 ```
 
 TTL 60 keeps a bad record from sticking. The SOA serial is ignored for dynamic updates; BIND rewrites the file.
@@ -152,14 +152,14 @@ TTL 60 keeps a bad record from sticking. The SOA serial is ignored for dynamic u
 
 ### 4. What external-dns actually writes
 
-For Ingress host `grafana.k8s.home.example.com` whose Service is a LoadBalancer at `192.168.1.200`:
+For Ingress host `grafana.k8s.home.example.com` whose Service is a LoadBalancer at `10.0.0.30`:
 
 | Record | Purpose |
 |--------|---------|
-| `grafana.k8s.home.example.com A 192.168.1.200` | The lookup clients use |
+| `grafana.k8s.home.example.com A 10.0.0.30` | The lookup clients use |
 | `external-dns-grafana.k8s.home.example.com TXT "heritage=external-dns,external-dns/owner=k8s,…"` | Ownership so two clusters do not fight |
 
-`--txt-prefix=external-dns-` and `--txt-owner-id=k8s` in this repo must stay unique if you ever run a second cluster against the same zone.
+`--txt-prefix=external-dns-` and `--txt-owner-id=homelab` in this repo must stay unique if you ever run a second cluster against the same zone.
 
 `--domain-filter` **and** `--rfc2136-zone` must be the same zone you created. A filter of `home.example.com` with a zone of `k8s.home.example.com` will skip names or fail updates.
 
@@ -173,26 +173,26 @@ Seal the key **after** wave 1 (see [secrets](secrets.md)). The Deployment in `va
 
 ## Router / Unbound override (topology A)
 
-Example: Unbound on OPNsense, BIND at `192.168.1.2`.
+Example: Unbound on OPNsense, BIND at `10.0.0.2`.
 
-- **Domain override:** domain `k8s.home.example.com`, IP `192.168.1.2`.
+- **Domain override:** domain `k8s.home.example.com`, IP `10.0.0.2`.
 - Do the same for `home.example.com` if BIND (or Unraid) is authoritative for the parent too.
 
 Test from a **laptop**, not only from a node:
 
 ```bash
 # Does the LAN resolver know where the zone lives?
-dig grafana.k8s.home.example.com @192.168.1.1
+dig grafana.k8s.home.example.com @10.0.0.1
 
 # Does BIND itself answer?
-dig grafana.k8s.home.example.com @192.168.1.2 +norecurse
+dig grafana.k8s.home.example.com @10.0.0.2 +norecurse
 
 # After external-dns (or the wildcard) exists:
 dig +short grafana.k8s.home.example.com
-# expect the ingress VIP, e.g. 192.168.1.200
+# expect the ingress VIP, e.g. 10.0.0.30
 ```
 
-If `@192.168.1.2` works and `@192.168.1.1` does not, the override is wrong. If both fail, the zone or record is wrong.
+If `@10.0.0.2` works and `@10.0.0.1` does not, the override is wrong. If both fail, the zone or record is wrong.
 
 Talos nodes need the same path: `machine.network.nameservers` should be the **LAN resolver** (router / Pi-hole), not `8.8.8.8` only. Cluster pods that look up `*.k8s.home.example.com` (webhooks, OIDC, Grafana datasources) use CoreDNS, which forwards to those node nameservers.
 

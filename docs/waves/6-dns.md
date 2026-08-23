@@ -12,7 +12,7 @@ One Deployment, RFC2136, **one** zone. Args live in `values/external-dns/deploym
 
 | Flag / object | Example |
 |---------------|---------|
-| `--rfc2136-host` | BIND LAN IP (`192.168.1.2`) |
+| `--rfc2136-host` | BIND LAN IP (`10.0.0.2`) |
 | `--rfc2136-zone` | `k8s.home.example.com` |
 | `--domain-filter` | **same** zone |
 | `--rfc2136-tsig-keyname` | `externaldns-key` |
@@ -34,4 +34,4 @@ kubectl -n external-dns logs deploy/external-dns
 dig +short grafana.k8s.home.example.com
 ```
 
-Ownership TXT records use prefix `external-dns-` and owner-id `k8s`. Leave those unique if a second cluster ever shares the zone.
+Ownership TXT records use prefix `external-dns-` and owner-id `homelab`. Leave those unique if a second cluster ever shares the zone.

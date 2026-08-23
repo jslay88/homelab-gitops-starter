@@ -1,4 +1,4 @@
-# CHANGEME: one unused LAN address for the ingress LoadBalancer.
+# CHANGEME: pinned ingress VIP. Keep it out of the CP (.11-.19) and worker (.21-.29) blocks.
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
@@ -6,4 +6,4 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-    - 192.168.1.200/32
+    - 10.0.0.30/32

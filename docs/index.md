@@ -17,7 +17,7 @@ It is not a dump of someone else's live `cluster-configs`. There are no real IPs
 1. Fill in the [inventory](inventory.md) on paper or in a notes file.
 2. Use this repo as a **GitHub template**. Replace `YOUR_GITHUB`, `CHANGEME`, and `example.com` in `master-application.yaml` and `applications/`.
 3. Read [local DNS](dns.md) and [Step-CA](step-ca.md) **before** you pick hostnames. The cluster cannot invent a LAN nameserver or a private CA.
-4. Build [Talos](talos-unraid.md) (configs live under `~/talos/k8s`), then [bootstrap Argo CD](bootstrap.md).
+4. Pick [addresses](addressing.md) (reserved CP / worker / VIP blocks; cluster name `homelab`). Build [Talos](talos-unraid.md) under `~/talos/homelab`, then [bootstrap Argo CD](bootstrap.md).
 5. Walk [waves 0–9](waves/index.md). Delete Application files you do not want.
 
 ## What GitOps means here

@@ -52,6 +52,7 @@ markdown_extensions:
 nav:
   - Overview: index.md
   - Inventory: inventory.md
+  - Addressing and topology: addressing.md
   - Architecture: architecture.md
   - External dependencies: external-deps.md
   - Local DNS and routing: dns.md

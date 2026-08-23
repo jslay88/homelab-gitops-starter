@@ -1,4 +1,4 @@
-# CHANGEME: unused LAN range for other LoadBalancer Services.
+# CHANGEME: dynamic LB pool. Do not overlap nodes, DHCP, or the ingress VIP.
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
@@ -6,4 +6,4 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-    - 192.168.1.201-192.168.1.210
+    - 10.0.0.50-10.0.0.99

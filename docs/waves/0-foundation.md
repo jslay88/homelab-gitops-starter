@@ -17,7 +17,7 @@ Talos will refuse MetalLB speakers and Longhorn pods without privileged enforce.
 
 Helm chart `metallb` plus `IPAddressPool` / `L2Advertisement` manifests.
 
-**Must change:** `values/metallb/manifests/pool-apps.yaml` and `pool-ingress.yaml` address ranges. They must be unused IPs on the **same L2** as the nodes.
+**Must change:** `values/metallb/manifests/pool-apps.yaml` and `pool-ingress.yaml`. Use the reserved VIP blocks from [addressing](../addressing.md) (`10.0.0.30` ingress, `10.0.0.50-99` apps). Never overlap `.11`–`.19` (CP) or `.21`–`.29` (workers).
 
 **Verify:**
 

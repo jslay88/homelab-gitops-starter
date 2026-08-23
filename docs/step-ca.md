@@ -38,7 +38,7 @@ If you later want a public name, use the Let's Encrypt ClusterIssuer. Do not poi
 
 Official image: `smallstep/step-ca`. Persist `/home/step` (or the image's `$STEPPATH`) on a share, e.g. `/mnt/user/appdata/step-ca`.
 
-Publish **9005/tcp** on the Unraid LAN IP (the examples use `https://192.168.1.2:9005`). HTTP on that port is the CA API, not a website.
+Publish **9005/tcp** on the Unraid LAN IP (the examples use `https://10.0.0.2:9005`). HTTP on that port is the CA API, not a website.
 
 First boot, on a shell that has the `step` CLI (workstation or the container):
 
@@ -47,7 +47,7 @@ step ca init \
   --deployment-type standalone \
   --name "Home Lab CA" \
   --dns ca.home.example.com \
-  --dns 192.168.1.2 \
+  --dns 10.0.0.2 \
   --address :9005 \
   --provisioner step-issuer \
   --password-file <(printf '%s' 'CHANGE-ME-AND-SEAL-LATER')
@@ -73,7 +73,7 @@ Restart the container after editing. Keep the **root** and **intermediate** keys
 
 ```bash
 # kid for the JWK provisioner
-step ca provisioner list --ca-url https://192.168.1.2:9005 --root $(step path)/certs/root_ca.crt
+step ca provisioner list --ca-url https://10.0.0.2:9005 --root $(step path)/certs/root_ca.crt
 
 # caBundle: root PEM, single-line base64
 base64 -w0 < "$(step path)/certs/root_ca.crt"; echo
@@ -105,7 +105,7 @@ kind: StepClusterIssuer
 metadata:
   name: step-issuer
 spec:
-  url: https://192.168.1.2:9005
+  url: https://10.0.0.2:9005
   caBundle: CHANGEME_BASE64_CA_PEM
   provisioner:
     name: step-issuer
@@ -166,7 +166,7 @@ spec:
   dnsNames:
     - unraid.home.example.com
   ipAddresses:
-    - 192.168.1.2
+    - 10.0.0.2
   issuerRef:
     name: step-issuer
     kind: StepClusterIssuer
@@ -211,7 +211,7 @@ Until the root is in the **OS** trust store, every browser will warn. Firefox on
 ## End-to-end: first internal UI
 
 1. [DNS](dns.md): `dig grafana.k8s.home.example.com` from the laptop returns the ingress VIP.
-2. Step-CA is up: `curl -vk https://192.168.1.2:9005/health` (or the CA's health URL).
+2. Step-CA is up: `curl -vk https://10.0.0.2:9005/health` (or the CA's health URL).
 3. Wave 2 (cert-manager) and wave 4 (step-issuer) are Healthy. `StepClusterIssuer` shows Ready.
 4. Ingress exists with the annotations above. `kubectl get certificate,certificaterequest,order -A` (orders are ACME-only; for Step you care about Certificate + CertificateRequest).
 5. `kubectl get secret grafana-tls -n monitoring -o jsonpath='{.data.tls\.crt}' | base64 -d | openssl x509 -noout -issuer -dates -ext subjectAltName`

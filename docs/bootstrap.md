@@ -8,11 +8,11 @@ If you want `https://something.k8s.home.example.com` from a laptop, finish [loca
 
 ## 1. Point kubectl at the cluster
 
-Configs from the Talos chapter live under `~/talos/k8s`:
+Configs from the Talos chapter live under `~/talos/homelab`:
 
 ```bash
-export KUBECONFIG=~/talos/k8s/kubeconfig
-export TALOSCONFIG=~/talos/k8s/_out/talosconfig
+export KUBECONFIG=~/talos/homelab/kubeconfig
+export TALOSCONFIG=~/talos/homelab/_out/talosconfig
 kubectl get nodes
 ```
 

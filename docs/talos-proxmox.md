@@ -2,7 +2,9 @@
 
 Same cluster as [Talos on Unraid](talos-unraid.md). Only the VM host changes.
 
-Create two VMs ([Talos Proxmox docs](https://docs.siderolabs.com/talos/v1.12/platform-specific-installations/virtualized-platforms/proxmox)):
+Create two VMs to start (`talos-cp-01`, `talos-worker-01`). Same [addressing](addressing.md) as Unraid: CP in `.11`–`.19`, workers in `.21`–`.29`. Three control-plane VMs is a later choice, not the default.
+
+[Talos Proxmox docs](https://docs.siderolabs.com/talos/v1.12/platform-specific-installations/virtualized-platforms/proxmox):
 
 | Setting | Value |
 |---------|--------|

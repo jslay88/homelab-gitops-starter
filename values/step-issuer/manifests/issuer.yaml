@@ -6,7 +6,7 @@ kind: StepClusterIssuer
 metadata:
   name: step-issuer
 spec:
-  url: https://192.168.1.2:9005
+  url: https://10.0.0.2:9005
   caBundle: CHANGEME_BASE64_CA_PEM
   provisioner:
     name: CHANGEME
