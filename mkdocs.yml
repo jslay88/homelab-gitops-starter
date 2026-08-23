@@ -60,6 +60,7 @@ nav:
   - Talos on Unraid: talos-unraid.md
   - Talos on Proxmox: talos-proxmox.md
   - Bootstrap Argo CD: bootstrap.md
+  - Application sources: argo-sources.md
   - Waves:
       - Order: waves/index.md
       - "0 — Foundation": waves/0-foundation.md

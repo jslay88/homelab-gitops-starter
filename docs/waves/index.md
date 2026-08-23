@@ -1,6 +1,6 @@
 # Waves
 
-Each file in `applications/` is one Argo CD Application with `argocd.argoproj.io/sync-wave`.
+Each file in `applications/` is one Argo CD Application with `argocd.argoproj.io/sync-wave`. They are not one shape: some are a Helm chart, some are YAML in this repo, two are **both**. See [Application sources](../argo-sources.md).
 
 | Wave | Applications | Optional? |
 |------|----------------|-----------|

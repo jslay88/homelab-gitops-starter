@@ -15,7 +15,7 @@ Talos will refuse MetalLB speakers and Longhorn pods without privileged enforce.
 
 ## metallb
 
-[MetalLB](https://metallb.io/) Helm chart plus [`IPAddressPool` / `L2Advertisement`](https://metallb.io/configuration/) manifests. This lab uses [Layer 2](https://metallb.io/concepts/layer2/), not BGP.
+[MetalLB](https://metallb.io/) Helm chart plus [`IPAddressPool` / `L2Advertisement`](https://metallb.io/configuration/) manifests in the **same** Application (three Argo sources). The chart is the speaker; `values/metallb/manifests/` is your LAN. This lab uses [Layer 2](https://metallb.io/concepts/layer2/), not BGP. Why that split: [Application sources](../argo-sources.md#chart--manifests-metallb).
 
 **Must change:** `values/metallb/manifests/pool-apps.yaml` and `pool-ingress.yaml`. Use the reserved VIP blocks from [addressing](../addressing.md) (`10.0.0.30` ingress, `10.0.0.50-99` apps). Never overlap `.11`–`.19` (CP nodes), `.20` (Kubernetes API VIP), or `.21`–`.29` (workers).
 

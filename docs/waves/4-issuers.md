@@ -36,7 +36,7 @@ kubectl describe clusterissuer letsencrypt
 
 This is optional in the Application list and **not** optional if you want `https://grafana.k8s.home.example.com` without a browser warning.
 
-The [step-issuer](https://github.com/smallstep/step-issuer) chart is only the controller ([cert-manager tutorial](https://smallstep.com/docs/tutorials/kubernetes-cert-manager/)). The `StepClusterIssuer` points at [Step-CA](https://smallstep.com/docs/step-ca/) **outside** the cluster. The CA, provisioner password, `caBundle`, client trust, and the correct Ingress annotations are all on the [Step-CA](../step-ca.md) page — read that before filling YAML.
+The [step-issuer](https://github.com/smallstep/step-issuer) chart is only the controller ([cert-manager tutorial](https://smallstep.com/docs/tutorials/kubernetes-cert-manager/)). The `StepClusterIssuer` is raw YAML in `values/step-issuer/manifests/`, applied as a **third** Argo source next to the chart ([Application sources](../argo-sources.md#chart--manifests-step-issuer)). It points at [Step-CA](https://smallstep.com/docs/step-ca/) **outside** the cluster. The CA, provisioner password, `caBundle`, client trust, and the correct Ingress annotations are all on the [Step-CA](../step-ca.md) page — read that before filling YAML.
 
 **Must change** in `values/step-issuer/manifests/issuer.yaml`:
 

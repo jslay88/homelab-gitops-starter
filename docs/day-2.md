@@ -6,6 +6,8 @@ Do **not** put TeslaMate, Authentik, or media charts in this starter. Add a new 
 
 ## Pattern
 
+Most day-2 apps are **chart + values** (two sources) or **manifests only**. Only add a third `path: …/manifests` source when a chart installs a controller and you still need a CR it will not create. Full table: [Application sources](argo-sources.md).
+
 `applications/my-app.yaml`:
 
 ```yaml

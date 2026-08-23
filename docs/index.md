@@ -36,6 +36,8 @@ After the first apply, you do not `helm upgrade` platform charts by hand. You ch
 
 We use **App of Apps** (one YAML file per Application), not ApplicationSet. Homelab platform apps are few and different from each other — Helm-only, raw manifests, extra `ignoreDifferences`. A shared generator fights that.
 
+Two Applications are **chart + raw manifests** in one object (MetalLB pools, `StepClusterIssuer`). The rest are chart-only or YAML-only. Breakdown: [Application sources](argo-sources.md).
+
 ## Two kinds of hostname
 
 | Kind | Example | DNS | Certificate |
