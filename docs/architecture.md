@@ -29,20 +29,21 @@ flowchart TD
 ```mermaid
 flowchart TB
   subgraph hub["Infra hub — Unraid or any NAS"]
-    direction TB
+    direction LR
     Bind[BIND RFC2136]
     StepCA[Step-CA]
     Minio[MinIO]
     Nfs[NFS export]
   end
   subgraph cluster["Talos cluster"]
-    direction TB
+    direction LR
     Edns[external-dns]
     Cm[cert-manager]
     Lh[Longhorn]
     Mlb[MetalLB] --> Ing[nginx-ingress]
     Argo[Argo CD]
   end
+  hub --> cluster
   Bind --> Edns
   StepCA --> Cm
   Minio --> Lh
