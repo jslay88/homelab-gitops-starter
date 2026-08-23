@@ -247,12 +247,13 @@ That A record will **not** be the ingress VIP. Do not reuse the `*.` wildcard fo
 | Pi-hole local DNS records | Fine for five hosts. Painful as a zone database. Use BIND for `k8s.home.example.com`. |
 | CoreDNS only (in-cluster) | Laptops will not use it. You still need a LAN nameserver. |
 
-## Checklist
+!!! success "Validation"
+    Do not start [wave 6](waves/6-dns.md) or a [first app](first-app.md) Ingress until 1–5 pass from a **laptop** (not only from Unraid):
 
-1. Zone `k8s.home.example.com` exists on BIND; SOA/NS load without errors (`named-checkzone`).
-2. TSIG key created; secret not in Git.
-3. Router/Pi-hole forwards that zone to BIND (topology A) **or** DHCP points at BIND (topology B).
-4. `dig` from a laptop returns the ingress VIP (wildcard or a test record).
-5. Talos `nameservers` are the LAN resolver.
-6. After wave 6 + sealed TSIG: Ingress hosts appear as A + TXT in BIND (`dig AXFR` with the key, or the BIND log).
-7. Certificates: [Step-CA](step-ca.md) for those internal names.
+    1. Zone `k8s.home.example.com` exists on BIND; SOA/NS load without errors (`named-checkzone`).
+    2. TSIG key created; secret not in Git.
+    3. Router/Pi-hole forwards that zone to BIND (topology A) **or** DHCP points at BIND (topology B).
+    4. `dig +short dummy.k8s.home.example.com` returns the ingress VIP (wildcard or a test record). NXDOMAIN or a public IP = stop.
+    5. Talos `nameservers` are the LAN resolver (`talosctl get resolvers` / the patch you applied).
+
+    After wave 6 + sealed TSIG: Ingress hosts appear as A + TXT in BIND (`dig AXFR` with the key, or the BIND log). Certificates for those names: [Step-CA](step-ca.md).

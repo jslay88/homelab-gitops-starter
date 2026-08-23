@@ -13,6 +13,9 @@ This is not a Talos upgrade. OS/Kubernetes: [Talos day-2](talos-day2.md).
 
 Do not bump Longhorn, Argo, and kube-prometheus-stack in one commit on a Sunday.
 
+!!! success "Validation"
+    Before you change `targetRevision`: that Application is already Synced/Healthy, `kubectl get nodes` is Ready, and you have an [etcd snapshot](talos-day2.md) if the chart owns CRDs (cert-manager, Argo, CNPG, kube-prometheus-stack). Do not start the next bump until this one is Healthy again.
+
 ## App-specific notes
 
 | App | Watch |

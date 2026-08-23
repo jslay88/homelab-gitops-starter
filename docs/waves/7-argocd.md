@@ -4,7 +4,8 @@ The same [Argo CD](https://argo-cd.readthedocs.io/en/stable/) Helm chart you ins
 
 `ServerSideApply=true` is set because ApplicationSet CRDs are large.
 
-**Verify:** the `argocd` Application is Synced/Healthy and `helm -n argocd list` still shows the release.
+!!! success "Validation"
+    `argocd` Application is Synced/Healthy and `helm -n argocd list` still shows the release. Port-forward still logs you in as `admin`. Do not `helm upgrade` or `helm uninstall` from the laptop after this — Git owns the chart.
 
 ## Ingress (after DNS + Step-CA)
 
@@ -36,6 +37,9 @@ server:
 ```
 
 `server.insecure: true` means Argo serves HTTP to nginx; clients still see HTTPS. That is the usual split with this ingress. Do not also enable SSL passthrough unless you know you want it.
+
+!!! success "Validation"
+    Do not enable this Ingress until [DNS](../dns.md) `dig argocd.k8s.home.example.com` returns the ingress VIP and [step-issuer](4-issuers.md) is Ready. Then: Certificate `argocd-server-tls` Ready, browser with the [root](../step-ca.md) installed, padlock. If you only have port-forward, leave `ingress.enabled` off.
 
 Admin password is still the initial Secret until you rotate it (Argo UI or `argocd account update-password`). Do not commit it.
 

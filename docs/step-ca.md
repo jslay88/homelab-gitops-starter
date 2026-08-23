@@ -69,6 +69,16 @@ Set max leaf lifetime to 24h (matches this lab's `Certificate` objects). In `ca.
 
 Restart the container after editing. Keep the **root** and **intermediate** keys on the Unraid volume. Back that volume up like you would etcd.
 
+!!! success "Validation"
+    Do not fill `issuer.yaml` or sync wave 4 until the CA answers on the LAN:
+
+    ```bash
+    curl -vk https://10.0.0.2:9005/health
+    step ca provisioner list --ca-url https://10.0.0.2:9005 --root "$(step path)/certs/root_ca.crt"
+    ```
+
+    Connection refused = wrong publish port or the container is not running. A provisioner list with no `step-issuer` JWK = you still need `step ca init` (or you named it something else — match `provisioner.name`).
+
 ### Values you will paste into Git (not secrets)
 
 ```bash
@@ -223,13 +233,14 @@ If the Certificate is Ready but the browser still warns, you are missing the **r
 
 Delete `applications/step-issuer.yaml`. Use only Let's Encrypt on public names, or live with browser warnings / mkcert on a single admin laptop. mkcert is fine for one person and a pain the first time a second laptop appears.
 
-## Checklist
+!!! success "Validation"
+    Do not open a [first app](first-app.md) or Grafana Ingress until:
 
-1. CA data dir on Unraid is backed up.
-2. `maxTLSCertDuration` is 24h.
-3. `issuer.yaml` has real `url`, `caBundle`, `kid`, `name`.
-4. Provisioner password is a SealedSecret, not plaintext.
-5. Pods can route to Unraid:9005.
-6. Ingresses use `issuer` + `issuer-kind: StepClusterIssuer` + `issuer-group: certmanager.step.sm`.
-7. Root is installed on the devices you actually use.
-8. Public names still use `letsencrypt`, not this issuer.
+    1. CA data dir on Unraid is backed up.
+    2. `maxTLSCertDuration` is 24h.
+    3. `issuer.yaml` has real `url`, `caBundle`, `kid`, `name` (no `CHANGEME`).
+    4. Provisioner password is a SealedSecret, not plaintext.
+    5. A **pod** can reach Unraid:9005 (`curl` from a debug pod, not only your laptop).
+    6. `kubectl get stepclusterissuer` is Ready.
+    7. Root is installed on the device you will browse from (`curl -v https://…` shows Home Lab CA).
+    8. Public names still use `letsencrypt`, not this issuer.

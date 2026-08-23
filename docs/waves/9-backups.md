@@ -10,6 +10,17 @@ Three different jobs. Do not mix them.
 
 MinIO install: [Unraid extras](../unraid-extras.md). Seal keys: [secrets](../secrets.md#catalog). Skip this wave until the endpoint exists. The Applications are harmless idle if you never create an `ObjectStore` or a backup target.
 
+!!! success "Validation"
+    Do not point Longhorn or Barman at MinIO until a worker can reach the API:
+
+    ```bash
+    # from the workstation, then from a debug pod on a worker:
+    curl -sI http://10.0.0.2:9000/minio/health/live
+    mc ls nas/longhorn-backups
+    ```
+
+    Timeout or 403 with the **app** key (not root) means stop. The cluster masquerades as the node IP; Unraid must allow `.21`–`.29`.
+
 ## Longhorn → MinIO
 
 [Set a backup target](https://longhorn.io/docs/1.12.1/snapshots-and-backups/backup-and-restore/set-backup-target/). Helm 1.12 uses `defaultBackupStore` (not only the old `defaultSettings.backupTarget`).
@@ -36,7 +47,10 @@ defaultBackupStore:
 
 The `@us-east-1` is the S3 region token Longhorn expects. MinIO ignores region as long as `AWS_ENDPOINTS` points at the API. Trailing slash on the URL matters; copy the docs form.
 
-4. Sync. Longhorn UI → Backup: target should be Ready. Snapshot a test volume, Backup, then **Restore** to a new volume on a throwaway PVC before you trust it.
+4. Sync. Longhorn UI → Backup: target should be Ready.
+
+!!! success "Validation"
+    Do not trust this for real volumes until: target **Ready** in the UI, a throwaway PVC snapshot → Backup → **Restore** to a new volume, file is still there. `Unavailable` target = endpoint, Secret keys, or trailing slash on `backupTarget`.
 
 Workers must reach `10.0.0.2:9000`. This is not off-site unless MinIO is.
 

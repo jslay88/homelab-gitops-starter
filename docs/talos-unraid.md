@@ -29,6 +29,9 @@ talosctl version --client
 
 Keep `talosctl` on the same major/minor as the Talos image you boot.
 
+!!! success "Validation"
+    `talosctl version --client` prints a client that matches the [pinned](versions.md) Talos minor. `kubectl` and `helm` are on `$PATH`. Do not generate machine configs with a client from a different major.
+
 ## Phase 1 — Unraid VMs
 
 In Unraid: **VMs → Add VM**. Suggested settings (same idea as [Talos on Proxmox](https://docs.siderolabs.com/talos/v1.12/platform-specific-installations/virtualized-platforms/proxmox)):
@@ -43,6 +46,16 @@ In Unraid: **VMs → Add VM**. Suggested settings (same idea as [Talos on Proxmo
 | Names | `talos-cp-01`, `talos-cp-02`, `talos-cp-03`, `talos-worker-01` |
 
 Do not run the Unraid “install a distro” path. Power on, note the maintenance-mode IP (or plan static IPs in patches).
+
+!!! success "Validation"
+    Four guests exist and boot the Talos ISO (maintenance mode). From the workstation:
+
+    ```bash
+    talosctl get version --insecure --nodes 10.0.0.11
+    # same for .12, .13, .21
+    ```
+
+    If that times out, the NIC is on the wrong bridge or the VM is not in maintenance. Do not `gen config` until you can talk to port 50000.
 
 !!! note "Unraid vs Proxmox"
     The machine config is identical. Only the hypervisor UI changes. [Talos on Proxmox](talos-proxmox.md) is the same patches with a different host.
@@ -63,6 +76,9 @@ factory.talos.dev/installer/<SCHEMATIC_ID>:v1.12.x
 ```
 
 Use that as `--install-image`.
+
+!!! success "Validation"
+    `INSTALL_IMAGE` is `factory.talos.dev/installer/<id>:v1.12.x`, not the vanilla `ghcr.io/siderolabs/installer` tag. Longhorn will not start on a node that never got `iscsi-tools`.
 
 ## Phase 3 — Generate configs
 
@@ -177,6 +193,9 @@ talosctl machineconfig patch _out/worker.yaml --patch @patches/worker-01.yaml -o
 
 Store `secrets.yaml` offline. It is how you recover `talosconfig`.
 
+!!! success "Validation"
+    `_out/cp-01.yaml` (and 02/03) contain `vip.ip: 10.0.0.20` and **different** node addresses. `_out/worker-01.yaml` has **no** `vip` block. `talosctl gen config` used `https://10.0.0.20:6443`. Do not `apply-config` if the endpoint was a node IP — you would have to regenerate.
+
 ## Phase 4 — Install and bootstrap
 
 VMs must be in maintenance mode (port 50000).
@@ -204,7 +223,18 @@ kubectl --kubeconfig ./kubeconfig get nodes
 
 The API VIP does **not** exist until etcd is up (Talos elects a holder via etcd). After nodes are Ready, `ping 10.0.0.20` and `curl -k https://10.0.0.20:6443/version` should work.
 
-Wait until four nodes are Ready (3 CP + 1 worker). Then go to [bootstrap](bootstrap.md). Later: [Talos day-2](talos-day2.md) (upgrade, add a worker, etcd restore).
+!!! success "Validation"
+    Do not start [Argo bootstrap](bootstrap.md) until all of these pass:
+
+    ```bash
+    kubectl get nodes   # 4 Ready: 3 control-plane + 1 worker
+    kubectl config view --minify | grep server   # https://10.0.0.20:6443
+    ping -c 2 10.0.0.20
+    curl -k https://10.0.0.20:6443/version
+    talosctl etcd members   # 3 members
+    ```
+
+Later: [Talos day-2](talos-day2.md) (upgrade, add a worker, etcd restore).
 
 ## Kubernetes API VIP
 

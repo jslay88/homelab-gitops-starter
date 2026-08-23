@@ -2,7 +2,18 @@
 
 Waves Healthy is not the same as “a browser got a real cert.” This page is one throwaway app in **your** template copy. Delete it when you are done. Do not add it to the public starter.
 
-Need: waves 0–4 Healthy, [DNS](dns.md) `dig` from a laptop already returning the ingress VIP (wildcard is enough), [Step-CA](step-ca.md) root on that laptop.
+!!! success "Validation"
+    Do not create `values/whoami/` until every item is true:
+
+    | Check | Expect |
+    |-------|--------|
+    | Waves 0–4 in Argo | Synced / Healthy |
+    | `kubectl -n nginx-ingress get svc` | EXTERNAL-IP = ingress VIP |
+    | `dig +short dummy.k8s.home.example.com` from a **laptop** | that VIP (wildcard is enough) |
+    | `kubectl get stepclusterissuer` | Ready |
+    | Laptop trust store | [Step-CA](step-ca.md) **root** installed |
+
+    A missing row is a [wave](waves/index.md) / [DNS](dns.md) / [Step-CA](step-ca.md) problem. This page will not fix it.
 
 ## 1. Namespace + whoami
 
@@ -100,7 +111,7 @@ spec:
 
 `applications/whoami.yaml` — manifests only, wave `10`. `path: values/whoami`. Same `repoURL` as the other Applications. `CreateNamespace` optional (the Namespace is in the kustomization).
 
-Push. Wait for the Application to go Healthy.
+Push. Wait for the Application to go Healthy. Do not open a browser until the ladder below is green.
 
 ## 3. Ladder
 
@@ -115,7 +126,8 @@ curl -vI https://whoami.k8s.home.example.com
 # issuer = Home Lab CA, HTTP 200
 ```
 
-Browser with the root installed: padlock, whoami headers.
+!!! success "Validation"
+    All three of `Certificate Ready=True`, `dig` = ingress VIP, and `curl` issuer = Home Lab CA must pass before you call the platform done. Browser with the root installed: padlock, whoami headers. If any step fails, use the table — do not add Grafana Ingress on top of a broken whoami.
 
 | Failure | Likely |
 |---------|--------|
@@ -128,6 +140,9 @@ Browser with the root installed: padlock, whoami headers.
 ## 4. Optional: public name
 
 Second Ingress (or a second host on the same one) with `cluster-issuer: letsencrypt`, `http01-edit-in-place`, `issue-temporary-certificate`. Public DNS + WAN 80 to `.30`. Staging first. [Day-2](day-2.md#public-ingress-lets-encrypt).
+
+!!! success "Validation"
+    Do not switch the ClusterIssuer to production ACME until: public `dig` for that hostname returns the **WAN** address (or the VIP if you 1:1 NAT), `curl -sI http://<public-name>/.well-known/acme-challenge/probe` hits **this** nginx (not a node), and a **staging** Certificate reached Ready. Production rate limits will punish a broken NAT.
 
 ## 5. Tear down
 

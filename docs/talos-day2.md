@@ -11,7 +11,8 @@ export KUBECONFIG=~/talos/homelab/kubeconfig
 
 `talosctl` endpoints stay `.11` `.12` `.13`. Never the VIP.
 
-## Health before you touch anything
+!!! success "Validation"
+    Do not upgrade, add a node, or restore until this is green. A second change on an already-degraded etcd is how you get a second outage.
 
 ```bash
 talosctl health

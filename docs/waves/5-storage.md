@@ -87,7 +87,15 @@ Use S3 as S3. Skip `applications/csi-s3.yaml` until you have a concrete object t
 
 `preUpgradeChecker.jobEnabled: false` avoids a common first-sync failure.
 
-**Verify:** `kubectl -n longhorn get pods` and the Longhorn UI (port-forward or later Ingress).
+!!! success "Validation"
+    Do not create a CNPG `Cluster` or any PVC you care about until:
+
+    ```bash
+    kubectl -n longhorn get pods   # manager, instance-manager, not CrashLoop
+    kubectl get sc longhorn        # default, or the class you intend
+    ```
+
+    Then Longhorn UI (port-forward `svc/longhorn-frontend` 8080:80): every **worker** disk is Schedulable. Control planes should not appear as replica targets. If pods never start, the Image Factory extensions or `kubelet.extraMounts` were skipped — do not paper over that with NFS.
 
 Backup target (MinIO) is optional. Procedure: [wave 9](9-backups.md#longhorn--minio). NAS install: [MinIO and NFS](../unraid-extras.md).
 
@@ -100,6 +108,17 @@ Export on Unraid: [MinIO and NFS](../unraid-extras.md#nfs-export-rwx).
 **Must change:** `nfs.server` and `nfs.path` in `values/nfs-provisioner/values.yaml`.
 
 StorageClass name: `nfs` (not default). Delete the Application if you do not have an export.
+
+!!! success "Validation"
+    Before you bind a RWX PVC:
+
+    ```bash
+    showmount -e 10.0.0.2    # from a Linux box; export must list your worker IPs
+    kubectl get sc nfs
+    # create a throwaway PVC, mount it in a debug pod, write a file, delete the PVC
+    ```
+
+    `Pending` forever usually means `nfs.server` / `nfs.path` still say `CHANGEME`, or Unraid NFS does not allow the worker.
 
 ## csi-s3 (optional)
 

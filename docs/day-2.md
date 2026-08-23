@@ -1,6 +1,9 @@
 # Day-2 apps
 
-Platform is waves 0–9 (+ observability). Your apps start at wave **10** or higher. Prove Ingress + Step-CA first: [first app](first-app.md).
+Platform is waves 0–9 (+ observability). Your apps start at wave **10** or higher.
+
+!!! success "Validation"
+    Do not add a workload Ingress until [first app](first-app.md) already showed Certificate Ready, `dig` = ingress VIP, and a browser padlock. A second hostname on a broken path is not a test.
 
 Do **not** add workload charts to this starter repo. Add a new Application in **your** template copy.
 

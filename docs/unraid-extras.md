@@ -20,6 +20,9 @@ showmount -e 10.0.0.2
 
 5. `values/nfs-provisioner/values.yaml`: `nfs.server: 10.0.0.2`, `nfs.path: /mnt/user/k8s`.
 
+!!! success "Validation"
+    Do not sync `nfs-provisioner` until `showmount -e 10.0.0.2` lists the export and a Linux client (or a debug pod) can `mount` it read-write from a **worker** IP. “Share exists in the Unraid UI” is not the same as NFS allowing `.21`.
+
 Each PVC becomes a **subdirectory** of that export (`nfs-subdir`). Deleting a PVC with `archiveOnDelete: true` renames the dir instead of rm. Clean those up by hand.
 
 Unraid down = those PVCs unreadable. Do not put CNPG here.
@@ -48,6 +51,16 @@ mc anonymous set none nas/longhorn-backups
 ```
 
 Do not make the buckets public. The cluster reaches MinIO from **worker node IPs** (masquerade), same as NFS and BIND. Unraid firewall: allow `.21`–`.29` to `9000`.
+
+!!! success "Validation"
+    Do not add [wave 9](waves/9-backups.md) targets until:
+
+    ```bash
+    curl -sI http://10.0.0.2:9000/minio/health/live
+    mc ls nas/longhorn-backups
+    ```
+
+    Both must work with the **dedicated** key you will seal, not only the root user in the MinIO console.
 
 Seal keys per [secrets](secrets.md#catalog). Wire Longhorn / CNPG per [backups](waves/9-backups.md).
 

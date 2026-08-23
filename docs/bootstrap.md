@@ -22,6 +22,9 @@ kubectl get nodes
 
 If `server` is a node IP (`10.0.0.11`), you generated the cluster against the wrong endpoint. Fix that in Talos before you rely on maintenance: [API VIP](talos-unraid.md#kubernetes-api-vip).
 
+!!! success "Validation"
+    Do not install Argo until `kubectl get nodes` shows every node **Ready** and `server` is `https://10.0.0.20:6443`. Four nodes for the recommended topology (3 CP + 1 worker).
+
 ## 2. Install Argo CD (Helm, one shot)
 
 Chart docs: [Argo CD](https://argo-cd.readthedocs.io/en/stable/operator-manual/installation/). After wave 7, Git owns this release.
@@ -55,6 +58,11 @@ Port-forward if you want the UI before ingress exists:
 kubectl -n argocd port-forward svc/argocd-server 8080:443
 ```
 
+Open `https://localhost:8080` (self-signed — accept it). Username `admin`, password from the Secret above.
+
+!!! success "Validation"
+    Do not create repo credentials until every pod in `argocd` is Ready and you can log into that UI. If the UI never loads, Argo is not up; a later Application will not save you.
+
 ## 3. Replace placeholders in Git
 
 In **your** private template copy of this repo:
@@ -63,6 +71,9 @@ In **your** private template copy of this repo:
 - Inventory values in `values/` (MetalLB pools, ACME email, NFS, Step-CA, DNS)
 
 Commit and push to `main`.
+
+!!! success "Validation"
+    `grep -R YOUR_GITHUB applications/ master-application.yaml` must return nothing. `git remote -v` must be **your private** repo, not `jslay88/homelab-gitops-starter`. Do not create credentials that point at the public starter.
 
 ## 4. Create Git credentials — before the App of Apps
 
@@ -87,7 +98,34 @@ kubectl -n argocd label secret repo-creds-github \
 
 The label is what Argo looks for ([repository credentials](https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#repository-credentials)). Without it the Secret is just a Secret.
 
-If you already applied the App of Apps and every Application is `ComparisonError` / `authentication required` / `Repository not accessible`: create the Secret as above, then **Refresh** the `platform` Application (UI) or:
+### Validation — Argo UI (blocker for step 5) { #argo-repo-ui }
+
+Do **not** apply `master-application.yaml` until the UI says the private repo is reachable.
+
+1. Port-forward (step 2) if it is not still running. Log in as `admin`.
+2. **Settings** (gear) → **Repositories**.
+3. **+ Connect Repo** → **VIA HTTPS**.
+4. Repository URL: the **full** URL of your private copy, e.g. `https://github.com/YOU/homelab-gitops.git` — not this public starter.
+5. Username `git`. Password: the same PAT you put in the Secret.
+6. Project `default`. Connect.
+
+The row’s connection status must be **Successful** (green). That is the only proof the token can clone. A Secret that exists but has the wrong URL, missing `repo` scope, or no `repo-creds` label will fail here.
+
+You can leave that connected-repo row; it is a repository entry, not only a credential template. The prefix Secret from kubectl still covers other repos under `https://github.com/YOU`.
+
+If Connect fails: regenerate the PAT, fix `url` / label, `kubectl -n argocd get secret repo-creds-github --show-labels`, try again. Stay on this step.
+
+CLI equivalent (optional):
+
+```bash
+argocd login localhost:8080 --insecure
+argocd repo add https://github.com/YOU/homelab-gitops.git \
+  --username git --password "$GITHUB_TOKEN"
+argocd repo get https://github.com/YOU/homelab-gitops.git
+# CONNECTION STATE: Successful
+```
+
+If you already applied the App of Apps and every Application is `ComparisonError` / `authentication required` / `Repository not accessible`: create the Secret as above, pass this UI check, then **Refresh** the `platform` Application (UI) or:
 
 ```bash
 kubectl -n argocd annotate application platform argocd.argoproj.io/refresh=hard --overwrite
@@ -100,7 +138,7 @@ If you ignored the private-repo advice and the copy is public, skip this section
 ## 5. Apply the App of Apps
 
 !!! warning "Private repo"
-    If `kubectl -n argocd get secret repo-creds-github` fails, **stop**. Go back to [step 4](#4-create-git-credentials-before-the-app-of-apps). Applying now will sit on `authentication required` until that Secret exists.
+    If `kubectl -n argocd get secret repo-creds-github` fails, **stop**. If the Argo UI Repositories row is not **Successful**, **stop**. Go back to [step 4](#argo-repo-ui). Applying now will sit on `authentication required`.
 
 ```bash
 kubectl -n argocd get secret repo-creds-github   # must exist
@@ -114,6 +152,9 @@ kubectl -n argocd get applications
 ```
 
 Waves 0–2 should go Healthy first. Ingress (wave 3) needs MetalLB. Certificates need cert-manager CRDs. When 0–4 are Healthy and DNS works, prove the path with a [first app](first-app.md).
+
+!!! success "Validation"
+    In the UI: **Applications**. `platform` is Synced/Healthy and you see child apps (`namespaces`, `metallb`, …). If `platform` is empty or `ComparisonError`, the clone still failed — back to [step 4](#argo-repo-ui). Do not start [wave 0](waves/0-foundation.md) troubleshooting until `namespaces` exists.
 
 ## 6. Self-manage
 

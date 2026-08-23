@@ -16,6 +16,6 @@ Create **four** VMs to start: `talos-cp-01`–`03` and `talos-worker-01`. Same [
 | NIC | VirtIO on the LAN bridge (`vmbr0`) |
 | ISO | Talos metal image or Image Factory ISO |
 
-Then follow Unraid phases 2–4: Image Factory extensions, the same patches, `apply-config`, `bootstrap`, kubeconfig. Day-2 (upgrade, grow, recover) is the same: [Talos day-2](talos-day2.md).
+Then follow Unraid phases 2–4: Image Factory extensions, the same patches, `apply-config`, `bootstrap`, kubeconfig. Use the **Validation** blocks on that page the same way — four Ready nodes and `server: https://10.0.0.20:6443` before [bootstrap](bootstrap.md). Day-2 (upgrade, grow, recover) is the same: [Talos day-2](talos-day2.md).
 
 VirtIO disks are usually `/dev/vda`. Check with `talosctl get disks --insecure`.

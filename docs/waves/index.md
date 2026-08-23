@@ -18,6 +18,6 @@ Each file in `applications/` is one Argo CD Application with `argocd.argoproj.io
 
 **To skip:** delete (or move aside) the Application YAML and push. Do not leave a broken Application that cannot reach a `CHANGEME` endpoint if you never planned to fill it in.
 
-Values that **must** change before a healthy sync are listed on each wave page.
+Values that **must** change before a healthy sync are listed on each wave page. Each wave has a **Validation** block: treat a failed check as a stop, not a “continue and see.”
 
 Upstream manuals (MetalLB, cert-manager, Longhorn, F5 nginx, …) are linked from [versions](../versions.md). After the waves: [first app](../first-app.md), [Talos day-2](../talos-day2.md), [chart bumps](../upgrades.md).

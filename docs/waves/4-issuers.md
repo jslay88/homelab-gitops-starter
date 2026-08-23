@@ -25,12 +25,16 @@ Without edit-in-place, cert-manager spins up a **separate** solver Ingress. That
 
 **Skip** if you will not publish names. Delete `applications/letsencrypt.yaml`.
 
-**Verify:**
+!!! success "Validation"
+    Do not create a public Ingress until:
 
-```bash
-kubectl get clusterissuer letsencrypt
-kubectl describe clusterissuer letsencrypt
-```
+    ```bash
+    kubectl get clusterissuer letsencrypt
+    kubectl describe clusterissuer letsencrypt
+    # Ready=True. If ACME registration failed, the email / directory URL is still CHANGEME or staging/prod is mixed up.
+    ```
+
+    HTTP-01 also needs [wave 3](3-ingress.md) EXTERNAL-IP and WAN 80 → that VIP. A Ready issuer with no public DNS is not enough to issue.
 
 ## step-issuer (LAN names)
 
@@ -50,13 +54,15 @@ The [step-issuer](https://github.com/smallstep/step-issuer) chart is only the co
 
 **Skip** if you are Let's Encrypt-only. Delete `applications/step-issuer.yaml`.
 
-**Verify:**
+!!! success "Validation"
+    Do not add a LAN Ingress (or [first app](../first-app.md)) until:
 
-```bash
-kubectl get stepclusterissuer
-kubectl -n step-issuer get deploy
-# After the first Ingress:
-kubectl get certificate -A
-```
+    ```bash
+    kubectl -n step-issuer get deploy   # Ready
+    kubectl get stepclusterissuer       # Ready=True
+    curl -vk https://10.0.0.2:9005/health   # your CA; timeout = pods cannot reach Unraid
+    ```
 
-A Ready issuer with no Certificate objects is normal until you create an Ingress or a `Certificate`.
+    A Ready issuer with no Certificate objects is normal until you create an Ingress. If the issuer is not Ready, fix `url` / `caBundle` / provisioner Secret — a later Certificate will sit in `Issuing`.
+
+    After the first Ingress: `kubectl get certificate -A` → `Ready=True`.

@@ -18,7 +18,7 @@ It is not a dump of someone else's live lab. There are no real IPs, no SealedSec
 2. **Use this template** → new repo, **private**. Do not fork: a fork of a public repo stays public and stays linked. Replace `YOUR_GITHUB`, `CHANGEME`, and `example.com` in `master-application.yaml` and `applications/`. Private Git: create the Argo `repo-creds` Secret **before** the App of Apps ([bootstrap](bootstrap.md#4-create-git-credentials-before-the-app-of-apps)). Wave 2 only seals that Secret into Git later.
 3. Read [local DNS](dns.md) and [Step-CA](step-ca.md) **before** you pick hostnames. The cluster cannot invent a LAN nameserver or a private CA.
 4. Pick [addresses](addressing.md) (reserved CP / worker / VIP blocks; cluster name `homelab`). **Three control planes** plus a Talos **API VIP** at `.20` so `kubectl` has one IP that survives a CP reboot. Build [Talos](talos-unraid.md) under `~/talos/homelab`, then [bootstrap Argo CD](bootstrap.md).
-5. Walk [waves 0–9](waves/index.md). Delete Application files you do not want. Upstream docs for every pin: [versions](versions.md).
+5. Walk [waves 0–9](waves/index.md). Delete Application files you do not want. Stop at each **Validation** block — the next wave will not paper over a failed check. Upstream docs for every pin: [versions](versions.md).
 6. [First app](first-app.md): one whoami Ingress + Step-CA cert so you know DNS and TLS work.
 7. [Talos day-2](talos-day2.md) when you upgrade or add a node. [Backups](waves/9-backups.md) when MinIO exists. [Chart bumps](upgrades.md) when you change a pin.
 8. An [AI assistant](ai-assistant.md) can use `kubectl` or a Kubernetes MCP server against this repo and the cluster. Git still owns apply.

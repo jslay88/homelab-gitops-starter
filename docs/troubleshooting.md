@@ -4,7 +4,7 @@ An [AI assistant](ai-assistant.md) can run these checks with `kubectl` or a Kube
 
 ## Argo cannot clone the GitOps repo
 
-Private repo and no `repo-creds` Secret yet. Wave 2 cannot fix the first clone — that YAML is in the repo Argo cannot read. Create the Secret, then refresh `platform`: [bootstrap](bootstrap.md#4-create-git-credentials-before-the-app-of-apps).
+Private repo and no `repo-creds` Secret yet. Wave 2 cannot fix the first clone — that YAML is in the repo Argo cannot read. Create the Secret, then prove the clone in the UI (**Settings → Repositories** must be **Successful**) before you apply or refresh: [bootstrap](bootstrap.md#argo-repo-ui).
 
 Symptoms: `ComparisonError`, `authentication required`, `Repository not accessible`, empty `applications` after apply.
 

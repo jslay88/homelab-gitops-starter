@@ -15,6 +15,9 @@ Laptop
 
 Same Service + EndpointSlice whether the name is internal or public. Only the Ingress host and the cert-manager annotations change.
 
+!!! success "Validation"
+    Do not add these objects until [wave 3](waves/3-ingress.md) has an EXTERNAL-IP, [first app](first-app.md) already worked for a **Pod** backend, and you can `curl` the LAN process from a **worker** IP (not only from your laptop). If the worker cannot reach `10.0.0.2:8080`, nginx will 502 and it will look like an Ingress bug.
+
 ## Objects (Kubernetes 1.35+)
 
 `Endpoints` (`apiVersion: v1`) is **deprecated** (1.33+). Do not create `kind: Endpoints` and hope the control plane mirrors it. Write an [`EndpointSlice`](https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/) yourself. The Service is a [selector-less Service](https://kubernetes.io/docs/concepts/services-networking/service/#services-without-selectors). The edge object is a Kubernetes [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).

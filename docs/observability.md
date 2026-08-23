@@ -8,13 +8,16 @@ The values file is minimal: default storage class (Longhorn), no Alertmanager re
 
 **Must change (optional):** Grafana admin password (or let the chart generate one and rotate), retention, PVC size.
 
-**Verify:**
+!!! success "Validation"
+    Before you add a Grafana Ingress:
 
-```bash
-kubectl -n monitoring get pods
-kubectl port-forward -n monitoring svc/kube-prometheus-stack-grafana 3000:80
-# default user admin; password from Secret kube-prometheus-stack-grafana
-```
+    ```bash
+    kubectl -n monitoring get pods   # prometheus, grafana, operator Ready
+    kubectl port-forward -n monitoring svc/kube-prometheus-stack-grafana 3000:80
+    # default user admin; password from Secret kube-prometheus-stack-grafana
+    ```
+
+    Login on `:3000` must work. An Ingress on top of a CrashLoop Grafana will look like a cert problem. For the hostname path, [first app](first-app.md) must already have succeeded.
 
 On one worker, Prometheus + Grafana + Longhorn plus platform pods will be tight on 8 GiB RAM. 16 GiB on the worker is more comfortable.
 
