@@ -1,4 +1,12 @@
-/* Narrow content column: scroll wide diagrams instead of clipping. */
+/* Material default is 61rem (~1342px at the theme's 22px root).
+   76.25rem is +25%. Must beat .md-header__inner.md-grid / .md-main__inner.md-grid. */
+.md-grid,
+.md-header__inner.md-grid,
+.md-main__inner.md-grid {
+  max-width: 76.25rem;
+}
+
+/* Scroll wide diagrams instead of clipping. */
 .mermaid {
   overflow-x: auto;
   max-width: 100%;
