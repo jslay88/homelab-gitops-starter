@@ -1,0 +1,28 @@
+# Optional. Delete until MinIO/S3 credentials exist (see values/csi-s3/README.md).
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: csi-s3
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "5"
+spec:
+  project: default
+  sources:
+    - repoURL: https://github.com/YOUR_GITHUB/homelab-gitops-starter.git
+      targetRevision: main
+      ref: values
+    - repoURL: https://yandex-cloud.github.io/k8s-csi-s3/charts
+      chart: csi-s3
+      targetRevision: 0.43.7
+      helm:
+        releaseName: csi-s3
+        valueFiles:
+          - $values/values/csi-s3/values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

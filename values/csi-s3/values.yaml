@@ -1,0 +1,8 @@
+# Create a SealedSecret named csi-s3-secret in kube-system
+# (accessKeyID, secretAccessKey, endpoint). See README.md.
+secret:
+  create: false
+storageClass:
+  name: s3
+tolerations:
+  all: true

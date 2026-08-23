@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: etcd-backup-notes
+  namespace: kube-system
+data:
+  README: |
+    This CronJob is suspended. On Talos, snapshot etcd from a workstation:
+
+      talosctl etcd snapshot ./etcd-$(date -u +%Y%m%dT%H%M%SZ).snapshot
+
+    Copy the file to NAS or S3. Do not mount kubeadm hostPath etcd certs.
+
+    kubeadm/kubespray labs would use etcdctl + node-local certs; that is
+    out of scope for this starter.

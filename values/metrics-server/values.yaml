@@ -1,0 +1,12 @@
+args:
+  - --kubelet-insecure-tls
+
+resources:
+  requests:
+    cpu: 100m
+    memory: 200Mi
+  limits:
+    memory: 256Mi
+
+apiService:
+  insecureSkipTLSVerify: true

@@ -1,0 +1,50 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: metallb
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  project: default
+  sources:
+    - repoURL: https://github.com/YOUR_GITHUB/homelab-gitops-starter.git
+      targetRevision: main
+      ref: values
+    - repoURL: https://metallb.github.io/metallb
+      chart: metallb
+      targetRevision: 0.15.2
+      helm:
+        releaseName: metallb
+        valueFiles:
+          - $values/values/metallb/values.yaml
+    - repoURL: https://github.com/YOUR_GITHUB/homelab-gitops-starter.git
+      targetRevision: main
+      path: values/metallb/manifests
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: metallb-system
+  ignoreDifferences:
+    - group: admissionregistration.k8s.io
+      kind: ValidatingWebhookConfiguration
+      jsonPointers:
+        - /webhooks
+    - group: ""
+      kind: Secret
+      jsonPointers:
+        - /data
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /status
+    - group: apps
+      kind: DaemonSet
+      jsonPointers:
+        - /status
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true

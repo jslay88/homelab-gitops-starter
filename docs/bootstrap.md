@@ -1,0 +1,75 @@
+# Bootstrap Argo CD
+
+Manual steps happen **once**. After that, Git is the control plane.
+
+## 1. Point kubectl at the cluster
+
+```bash
+export KUBECONFIG=~/talos/friend-k8s/kubeconfig
+kubectl get nodes
+```
+
+## 2. Install Argo CD (Helm, one shot)
+
+```bash
+helm repo add argo https://argoproj.github.io/argo-helm
+helm repo update
+kubectl create namespace argocd
+helm install argocd argo/argo-cd \
+  --namespace argocd \
+  --version 8.6.0 \
+  --set server.service.type=ClusterIP
+```
+
+Wait until pods are Ready:
+
+```bash
+kubectl -n argocd get pods
+```
+
+Initial admin password:
+
+```bash
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath='{.data.password}' | base64 -d
+echo
+```
+
+Port-forward if you want the UI before ingress exists:
+
+```bash
+kubectl -n argocd port-forward svc/argocd-server 8080:443
+```
+
+## 3. Replace placeholders in Git
+
+In **your** template copy of this repo:
+
+- `YOUR_GITHUB` → your GitHub user/org (every `repoURL` that points at this repo)
+- Inventory values in `values/` (MetalLB pools, ACME email, NFS, Step-CA, DNS)
+
+Commit and push to `main`.
+
+## 4. Apply the App of Apps
+
+```bash
+kubectl apply -f master-application.yaml
+```
+
+That Application watches `applications/` and creates one child per YAML file.
+
+```bash
+kubectl -n argocd get applications
+```
+
+Waves 0–2 should go Healthy first. Ingress (wave 3) needs MetalLB. Certificates need cert-manager CRDs.
+
+## 5. Private Git
+
+If the repo is private, seal a PAT and add it under `values/argocd-repo-creds/` **before** wave 2 can pull. Public repos can delete `applications/argocd-repo-creds.yaml`.
+
+## 6. Self-manage
+
+Wave 7 adopts this Helm release into Git. After it syncs, change Argo CD by editing `values/argocd/values.yaml`, not by running `helm upgrade` on your laptop.
+
+!!! warning "Do not helm uninstall"
+    The wave 7 Application owns the same release. `helm uninstall argocd` after Git took over will fight Argo.

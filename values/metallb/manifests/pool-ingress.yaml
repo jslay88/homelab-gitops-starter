@@ -1,0 +1,9 @@
+# CHANGEME: one unused LAN address for the ingress LoadBalancer.
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: ingress
+  namespace: metallb-system
+spec:
+  addresses:
+    - 192.168.1.200/32

@@ -1,0 +1,16 @@
+# CHANGEME: url, caBundle (base64 PEM of your Step-CA root), provisioner kid.
+# Seal the provisioner password as Secret step-issuer-provisioner-password
+# key: password  — then reference it below.
+apiVersion: certmanager.step.sm/v1beta1
+kind: StepClusterIssuer
+metadata:
+  name: step-issuer
+spec:
+  url: https://192.168.1.2:9005
+  caBundle: CHANGEME_BASE64_CA_PEM
+  provisioner:
+    name: CHANGEME
+    kid: CHANGEME
+    passwordRef:
+      name: step-issuer-provisioner-password
+      key: password

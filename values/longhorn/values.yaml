@@ -1,0 +1,14 @@
+preUpgradeChecker:
+  jobEnabled: false
+
+longhornUI:
+  replicas: 1
+
+defaultSettings:
+  # 1 on a single worker. 3 only if you have three nodes with Longhorn disks.
+  defaultReplicaCount: "1"
+  concurrentAutomaticEngineUpgradePerNodeLimit: "3"
+
+persistence:
+  defaultClass: true
+  defaultClassReplicaCount: 1

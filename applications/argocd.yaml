@@ -1,0 +1,46 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "7"
+    argocd.argoproj.io/compare-options: ServerSideDiff=false
+spec:
+  project: default
+  sources:
+    - repoURL: https://github.com/YOUR_GITHUB/homelab-gitops-starter.git
+      targetRevision: main
+      ref: values
+    - repoURL: https://argoproj.github.io/argo-helm
+      chart: argo-cd
+      targetRevision: 8.6.0
+      helm:
+        releaseName: argocd
+        valueFiles:
+          - $values/values/argocd/values.yaml
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  ignoreDifferences:
+    - group: ""
+      kind: Secret
+      jsonPointers:
+        - /data
+        - /metadata/annotations
+    - group: apps
+      kind: Deployment
+      jsonPointers:
+        - /status
+    - group: apps
+      kind: StatefulSet
+      jsonPointers:
+        - /status
+  syncPolicy:
+    automated:
+      prune: false
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - RespectIgnoreDifferences=true
+      - ServerSideApply=true

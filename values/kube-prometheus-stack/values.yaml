@@ -1,0 +1,22 @@
+# Minimal stack. No Alertmanager receivers (add Slack/Pushover yourself).
+alertmanager:
+  enabled: true
+
+grafana:
+  enabled: true
+  persistence:
+    enabled: true
+    size: 5Gi
+    storageClassName: longhorn
+
+prometheus:
+  prometheusSpec:
+    retention: 7d
+    storageSpec:
+      volumeClaimTemplate:
+        spec:
+          storageClassName: longhorn
+          accessModes: [ReadWriteOnce]
+          resources:
+            requests:
+              storage: 20Gi

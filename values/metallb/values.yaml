@@ -1,0 +1,3 @@
+# Chart defaults are fine for a homelab. Speaker must run privileged (namespace PSS).
+speaker:
+  tolerateMaster: true

@@ -1,0 +1,21 @@
+# Optional. Suspended Talos-oriented stub. Delete if you snapshot from a workstation only.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: etcd-backup
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "9"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/YOUR_GITHUB/homelab-gitops-starter.git
+    targetRevision: main
+    path: values/etcd-backup
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: kube-system
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

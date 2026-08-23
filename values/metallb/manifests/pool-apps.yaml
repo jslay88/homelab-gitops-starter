@@ -1,0 +1,9 @@
+# CHANGEME: unused LAN range for other LoadBalancer Services.
+apiVersion: metallb.io/v1beta1
+kind: IPAddressPool
+metadata:
+  name: apps
+  namespace: metallb-system
+spec:
+  addresses:
+    - 192.168.1.201-192.168.1.210

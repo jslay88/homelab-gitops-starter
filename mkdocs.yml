@@ -1,0 +1,77 @@
+site_name: Homelab GitOps starter
+site_description: GitOps platform for a homelab Kubernetes cluster (Talos-friendly).
+site_url: https://jslay88.github.io/homelab-gitops-starter/
+repo_url: https://github.com/jslay88/homelab-gitops-starter
+repo_name: jslay88/homelab-gitops-starter
+edit_uri: edit/main/docs/
+copyright: MIT
+
+theme:
+  name: material
+  palette:
+    - scheme: default
+      primary: indigo
+      toggle:
+        icon: material/brightness-7
+        name: Switch to dark mode
+    - scheme: slate
+      primary: indigo
+      toggle:
+        icon: material/brightness-4
+        name: Switch to light mode
+  features:
+    - navigation.sections
+    - navigation.expand
+    - navigation.top
+    - search.highlight
+    - content.code.copy
+    - content.action.edit
+
+markdown_extensions:
+  - admonition
+  - attr_list
+  - def_list
+  - footnotes
+  - md_in_html
+  - tables
+  - toc:
+      permalink: true
+  - pymdownx.details
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format
+  - pymdownx.tabbed:
+      alternate_style: true
+  - pymdownx.highlight:
+      anchor_linenums: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+
+nav:
+  - Overview: index.md
+  - Inventory: inventory.md
+  - Architecture: architecture.md
+  - External dependencies: external-deps.md
+  - Talos on Unraid: talos-unraid.md
+  - Talos on Proxmox: talos-proxmox.md
+  - Bootstrap Argo CD: bootstrap.md
+  - Waves:
+      - Order: waves/index.md
+      - "0 — Foundation": waves/0-foundation.md
+      - "1 — Sealed Secrets": waves/1-sealed-secrets.md
+      - "2 — TLS and Git": waves/2-tls-git.md
+      - "3 — Ingress": waves/3-ingress.md
+      - "4 — Issuers": waves/4-issuers.md
+      - "5 — Storage": waves/5-storage.md
+      - "6 — DNS": waves/6-dns.md
+      - "7 — Argo CD": waves/7-argocd.md
+      - "8 — Metrics and CNPG": waves/8-metrics-cnpg.md
+      - "9 — Backups": waves/9-backups.md
+  - Secrets: secrets.md
+  - Observability: observability.md
+  - Day-2 apps: day-2.md
+  - Troubleshooting: troubleshooting.md
+  - What we left out: left-out.md
+  - Versions: versions.md

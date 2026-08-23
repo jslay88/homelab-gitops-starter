@@ -1,0 +1,22 @@
+# Slim self-manage values. Add ingress / SSO later in your copy.
+configs:
+  params:
+    application.resourceTrackingMethod: label
+
+server:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+
+controller:
+  resources:
+    requests:
+      cpu: 100m
+      memory: 512Mi
+
+repoServer:
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi

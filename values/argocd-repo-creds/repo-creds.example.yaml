@@ -1,0 +1,13 @@
+# Example only. Do not apply. kubeseal the live Secret instead.
+apiVersion: v1
+kind: Secret
+metadata:
+  name: repo-creds-github
+  namespace: argocd
+  labels:
+    argocd.argoproj.io/secret-type: repo-creds
+stringData:
+  type: git
+  url: https://github.com/YOUR_GITHUB
+  username: git
+  password: CHANGEME

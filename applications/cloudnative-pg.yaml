@@ -1,0 +1,33 @@
+# Optional until you need Postgres. Delete this file to skip.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: cloudnative-pg
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "8"
+    argocd.argoproj.io/compare-options: ServerSideDiff=false
+spec:
+  project: default
+  source:
+    repoURL: https://cloudnative-pg.github.io/charts
+    chart: cloudnative-pg
+    targetRevision: 0.29.0
+    helm:
+      releaseName: cnpg
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: cnpg-system
+  ignoreDifferences:
+    - group: apps
+      kind: Deployment
+      jqPathExpressions:
+        - .status
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - CreateNamespace=true
+      - ServerSideApply=true
+      - RespectIgnoreDifferences=true

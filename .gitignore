@@ -1,0 +1,9 @@
+site/
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+.idea/
+.vscode/
+talos/_out/
+talos/secrets.yaml

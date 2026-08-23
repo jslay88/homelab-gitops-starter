@@ -1,0 +1,27 @@
+# Bootstrap: apply once after `helm install` Argo CD.
+# Replace YOUR_GITHUB with your user/org (template copy of this repo).
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: platform
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/YOUR_GITHUB/homelab-gitops-starter.git
+    targetRevision: main
+    path: applications
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  ignoreDifferences:
+    - group: argoproj.io
+      kind: Application
+      jqPathExpressions:
+        - .metadata.annotations["kubectl.kubernetes.io/last-applied-configuration"]
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true
+    syncOptions:
+      - RespectIgnoreDifferences=true

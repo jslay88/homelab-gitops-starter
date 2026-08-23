@@ -1,0 +1,22 @@
+# Optional if this GitOps repo is public. Delete this file to skip.
+# After sealing a PAT, add the SealedSecret to values/argocd-repo-creds/kustomization.yaml.
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argocd-repo-creds
+  namespace: argocd
+  annotations:
+    argocd.argoproj.io/sync-wave: "2"
+spec:
+  project: default
+  source:
+    repoURL: https://github.com/YOUR_GITHUB/homelab-gitops-starter.git
+    targetRevision: main
+    path: values/argocd-repo-creds
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: argocd
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

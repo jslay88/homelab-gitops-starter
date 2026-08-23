@@ -1,0 +1,23 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: etcd-backup
+  namespace: kube-system
+spec:
+  schedule: "0 */6 * * *"
+  suspend: true
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          restartPolicy: Never
+          containers:
+            - name: remind
+              image: public.ecr.aws/docker/library/busybox:1.37
+              command:
+                - /bin/sh
+                - -c
+                - echo "Suspended on purpose. Use: talosctl etcd snapshot ./etcd.snapshot"

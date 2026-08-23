@@ -1,0 +1,28 @@
+controller:
+  # Single worker: set replicaCount to 1 or one replica stays Pending.
+  replicaCount: 2
+  affinity:
+    podAntiAffinity:
+      preferredDuringSchedulingIgnoredDuringExecution:
+        - weight: 100
+          podAffinityTerm:
+            labelSelector:
+              matchLabels:
+                app.kubernetes.io/name: nginx-ingress
+                app.kubernetes.io/instance: nginx-ingress
+            topologyKey: kubernetes.io/hostname
+  ingressClass:
+    name: nginx
+    setAsDefaultIngress: true
+  resources:
+    requests:
+      cpu: 100m
+      memory: 200Mi
+    limits:
+      cpu: 500m
+      memory: 500Mi
+  service:
+    type: LoadBalancer
+    allocateLoadBalancerNodePorts: false
+    annotations:
+      metallb.universe.tf/address-pool: ingress
