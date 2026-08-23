@@ -221,6 +221,8 @@ A **second** external-dns Deployment (Cloudflare, Route53) is how a long-lived l
 
 If you keep the wildcard **and** external-dns, a deleted Ingress still answers via the wildcard (and still hits nginx, which 404s). Some people like that; some find it confusing.
 
+HTTP UIs that live on the NAS or the router still use this Ingress VIP. That is Ingress → Service → EndpointSlice, not a second LoadBalancer: [LAN backends](lan-backends.md).
+
 ## Non-HTTP (LoadBalancer, not Ingress)
 
 Game servers and MQTT do not go through nginx. MetalLB assigns an IP from the **apps** pool. Create DNS yourself or annotate the Service:

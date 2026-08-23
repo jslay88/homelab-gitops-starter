@@ -29,6 +29,14 @@
 - Namespace not privileged.
 - `defaultReplicaCount: 3` on one worker — volumes stay degraded.
 
+## Ingress 502 / Service has no endpoints (LAN backend)
+
+- You created `kind: Endpoints`. On 1.35 that API is deprecated. Use an [EndpointSlice](lan-backends.md) with `kubernetes.io/service-name` and matching port **names**.
+- Service has a `selector`. Delete it; otherwise the control plane owns the slices.
+- LAN host firewall does not allow the **worker node** IPs. Flannel SNATs to `.21`–`.29`, not the ingress VIP.
+- Endpoint IP is wrong, DHCP moved it, or you used a ClusterIP / `127.0.0.1`.
+- LAN hop is HTTPS but Ingress is missing `nginx.org/ssl-services: "<service-name>"` (F5 annotation, not ingress-nginx).
+
 ## ACME HTTP-01 fails
 
 - Ingress VIP not reachable on port 80 from the internet. WAN 80/443 must DNAT to the **ingress VIP** (`.30` in the examples), not a worker, not a CP, and not the API VIP (`.20`).

@@ -75,6 +75,7 @@ nav:
   - Secrets: secrets.md
   - Observability: observability.md
   - Day-2 apps: day-2.md
+  - LAN apps behind Ingress: lan-backends.md
   - Troubleshooting: troubleshooting.md
   - What we left out: left-out.md
   - Versions: versions.md

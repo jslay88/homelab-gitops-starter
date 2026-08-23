@@ -45,6 +45,8 @@ We use **App of Apps** (one YAML file per Application), not ApplicationSet. Home
 
 If you skip both BIND and Step-CA, you can still reach apps by IP or by `/etc/hosts`, with browser warnings. That is a worse lab.
 
+UIs that already run on the LAN (NAS, router, a Pi) use the same Ingress and the same two cert paths. The backend is a Service plus an [EndpointSlice](lan-backends.md), not a Pod.
+
 ## Out of scope
 
 Workloads. Identity products. Ad-blocking DNS as a *cluster* component (Pi-hole can sit in front of BIND later). A descheduler. Multi-instance Postgres HA. Cilium. Those are [left out on purpose](left-out.md).

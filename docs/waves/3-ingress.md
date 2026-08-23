@@ -17,3 +17,5 @@ kubectl get ingressclass
 ```
 
 Router / firewall WAN forwards for **80 and 443** (public apps, Let's Encrypt HTTP-01) must point at this VIP, not a worker IP and not `.20`. See [addressing](../addressing.md).
+
+To hang a LAN web UI (Unraid, router, a Pi) off this same Ingress — TLS at nginx, backend not a Pod — see [LAN apps behind Ingress](../lan-backends.md).

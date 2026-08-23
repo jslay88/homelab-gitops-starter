@@ -95,6 +95,10 @@ spec:
 
 The name must resolve **on the internet** to whatever faces port 80 (hairpin or WAN). Staging first.
 
+## LAN hosts that are not Pods
+
+Unraid, the router, a Pi, or any other box on the LAN is an Ingress → Service → **EndpointSlice** (not the deprecated `Endpoints` object). nginx still terminates TLS. Full walkthrough: [LAN apps behind Ingress](lan-backends.md).
+
 ## Optional CNPG Cluster
 
 After wave 8, a one-instance Cluster is enough for a homelab app:
