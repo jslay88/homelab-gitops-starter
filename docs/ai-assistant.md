@@ -57,4 +57,4 @@ If MCP auth fails, it is almost always the kubeconfig path, a dead API VIP, or R
 - “Draft an Ingress + Service + EndpointSlice for a LAN host at `10.0.0.2:443` following [lan-backends](lan-backends.md).”
 - “Why is Certificate `whoami-tls` still Issuing? Check cert-manager and step-issuer; do not print Secret data.”
 
-When it is stuck, the [troubleshooting](troubleshooting.md) page is the checklist. The assistant should walk that before inventing a fourth StorageClass.
+When it is stuck, the [troubleshooting](troubleshooting.md) page is the checklist (skill `troubleshoot-cluster`). The assistant should walk that before inventing a fourth StorageClass.

@@ -54,6 +54,7 @@ Wave 2 cannot unlock the first clone — those manifests are *in* the private re
 | Waves / Validation | `docs/waves/` |
 | Day-2 Application | `docs/day-2.md` + skill `add-day2-app` |
 | Sealing | `docs/secrets.md` + skill `seal-secret` |
+| Cluster broken | `docs/troubleshooting.md` + skill `troubleshoot-cluster` |
 | Issues | `docs/help.md` — public repo only, no secrets |
 
 If a Validation block on the current page fails, stop. Do not paper over it with the next wave.
