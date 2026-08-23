@@ -87,5 +87,6 @@ nav:
   - LAN apps behind Ingress: lan-backends.md
   - Bumping charts: upgrades.md
   - Troubleshooting: troubleshooting.md
+  - AI assistant: ai-assistant.md
   - What we left out: left-out.md
   - Versions: versions.md

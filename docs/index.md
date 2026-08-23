@@ -21,6 +21,7 @@ It is not a dump of someone else's live lab. There are no real IPs, no SealedSec
 5. Walk [waves 0–9](waves/index.md). Delete Application files you do not want. Upstream docs for every pin: [versions](versions.md).
 6. [First app](first-app.md): one whoami Ingress + Step-CA cert so you know DNS and TLS work.
 7. [Talos day-2](talos-day2.md) when you upgrade or add a node. [Backups](waves/9-backups.md) when MinIO exists. [Chart bumps](upgrades.md) when you change a pin.
+8. An [AI assistant](ai-assistant.md) can use `kubectl` or a Kubernetes MCP server against this repo and the cluster. Git still owns apply.
 
 ## What GitOps means here
 
