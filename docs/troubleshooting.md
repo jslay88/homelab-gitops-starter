@@ -1,5 +1,11 @@
 # Troubleshooting
 
+## Argo cannot clone the GitOps repo
+
+Private repo and no `repo-creds` Secret yet. Wave 2 cannot fix the first clone — that YAML is in the repo Argo cannot read. Create the Secret, then refresh `platform`: [bootstrap](bootstrap.md#4-repo-credentials-first-private-git).
+
+Symptoms: `ComparisonError`, `authentication required`, `Repository not accessible`, empty `applications` after apply.
+
 ## Argo Application stuck OutOfSync
 
 - **Large CRDs:** set `ServerSideApply=true` (already on Argo CD, CNPG, kube-prometheus-stack).

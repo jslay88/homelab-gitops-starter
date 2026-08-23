@@ -17,9 +17,10 @@ kubeseal --fetch-cert --controller-name=sealed-secrets-controller \
 
 Keep `pub-cert.pem` for sealing on the workstation. It is the **public** half. The private half lives in the cluster (next section).
 
+The PAT Secret must already exist on the cluster **before** Argo can clone a private repo. Create it with kubectl during [bootstrap](bootstrap.md#4-repo-credentials-first-private-git). After wave 1, seal **that same** Secret so Git owns it:
+
 ```bash
-# example: GitHub PAT for Argo
-kubectl -n argocd create secret generic repo-creds-github \
+# example: GitHub PAT for Argo (same name as the bootstrap Secret)
   --from-literal=type=git \
   --from-literal=url=https://github.com/YOUR_GITHUB \
   --from-literal=username=git \

@@ -8,6 +8,8 @@
 
 ## argocd-repo-creds
 
-Required if you followed the recommendation and made the GitOps repo **private**. The kustomization starts **empty**. Seal a PAT (see [secrets](../secrets.md)) and add the SealedSecret to `values/argocd-repo-creds/kustomization.yaml` before this wave can pull.
+Required for a **private** GitOps repo. This Application does **not** unlock the first clone — Argo already needed a kubectl-created Secret to read `applications/` at all. See [bootstrap](../bootstrap.md#4-repo-credentials-first-private-git).
+
+After wave 1, [seal that same PAT](../secrets.md) and add the SealedSecret to `values/argocd-repo-creds/kustomization.yaml`. Same Secret name (`repo-creds-github`) so Git takes over the object you created by hand.
 
 Only delete `applications/argocd-repo-creds.yaml` if the copy is public (not recommended).

@@ -62,25 +62,50 @@ In **your** private template copy of this repo:
 
 Commit and push to `main`.
 
-## 4. Apply the App of Apps
+## 4. Repo credentials first (private Git)
+
+`master-application.yaml` tells Argo to clone **your** repo and apply `applications/`. That repo is private. Argo has no credentials yet. Wave 2 (`argocd-repo-creds`) cannot save you: that Application YAML *is inside the private repo*. Sealed Secrets is not installed yet either. You create the Secret **on the cluster** with kubectl, then apply the App of Apps.
+
+1. GitHub → Settings → Developer settings → Personal access tokens. Classic: scope `repo`. Fine-grained: **Contents: Read** on this one repository. Do not commit the token.
+2. The `url` is a **prefix**. `https://github.com/YOUR_GITHUB` covers every repo under that user/org. Narrower is fine (`https://github.com/YOUR_GITHUB/homelab-gitops.git`).
+
+```bash
+# once, on the workstation — not in Git
+kubectl -n argocd create secret generic repo-creds-github \
+  --from-literal=type=git \
+  --from-literal=url=https://github.com/YOUR_GITHUB \
+  --from-literal=username=git \
+  --from-literal=password=ghp_YOUR_TOKEN
+
+kubectl -n argocd label secret repo-creds-github \
+  argocd.argoproj.io/secret-type=repo-creds
+```
+
+The label is what Argo looks for ([repository credentials](https://argo-cd.readthedocs.io/en/stable/operator-manual/declarative-setup/#repository-credentials)). Without it the Secret is just a Secret.
+
+If you already applied the App of Apps and every Application is `ComparisonError` / `authentication required` / `Repository not accessible`: create the Secret as above, then **Refresh** the `platform` Application (UI) or:
+
+```bash
+kubectl -n argocd annotate application platform argocd.argoproj.io/refresh=hard --overwrite
+```
+
+After wave 1 is Healthy, [seal the same PAT](secrets.md) into `values/argocd-repo-creds/` so Git owns the Secret. Use the **same** name (`repo-creds-github`) so you are not maintaining two creds. Until then, the kubectl Secret is the only thing that can clone.
+
+If you ignored the private-repo advice and the copy is public, skip this section and delete `applications/argocd-repo-creds.yaml`. That is not the path this guide recommends.
+
+## 5. Apply the App of Apps
 
 ```bash
 kubectl apply -f master-application.yaml
 ```
 
-That Application watches `applications/` and creates one child per YAML file.
+That Application watches `applications/` and creates one child per YAML file. With the Secret from step 4, the first clone succeeds.
 
 ```bash
 kubectl -n argocd get applications
 ```
 
 Waves 0–2 should go Healthy first. Ingress (wave 3) needs MetalLB. Certificates need cert-manager CRDs. When 0–4 are Healthy and DNS works, prove the path with a [first app](first-app.md).
-
-## 5. Git credentials (private repo)
-
-**Keep the GitOps repo private.** You will commit LAN IPs, SealedSecrets, and issuer YAML. A public fork is a map of the lab.
-
-Seal a PAT (or GitHub App) with `repo` read and add it under `values/argocd-repo-creds/` **before** wave 2 can pull. See [secrets](secrets.md). If you ignored the advice and left the copy public, you can delete `applications/argocd-repo-creds.yaml` — that is not the path this guide recommends.
 
 ## 6. Self-manage
 
