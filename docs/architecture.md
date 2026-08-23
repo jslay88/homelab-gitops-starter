@@ -27,36 +27,27 @@ flowchart TD
 ## Cluster vs Unraid (or any NAS)
 
 ```mermaid
-flowchart TB
-  subgraph hub["Infra hub — Unraid or any NAS"]
-    direction TB
-    Bind[BIND RFC2136]
-    StepCA[Step-CA]
-    Minio[MinIO]
-    Nfs[NFS export]
-    Bind ~~~ StepCA ~~~ Minio ~~~ Nfs
+flowchart LR
+  subgraph unraid [Infra_hub]
+    Bind["BIND_RFC2136"]
+    StepCA["Step_CA"]
+    Minio["MinIO"]
+    Nfs["NFS_export"]
   end
-  hub ==> cluster
-  subgraph cluster["Talos cluster"]
-    direction TB
-    Edns[external-dns]
-    Cm[cert-manager]
-    Lh[Longhorn]
-    Mlb[MetalLB] --> Ing[nginx-ingress]
-    Argo[Argo CD]
-    Edns ~~~ Cm ~~~ Lh ~~~ Mlb
-    Ing ~~~ Argo
+  subgraph cluster [Talos_cluster]
+    Argo["Argo_CD"]
+    Mlb["MetalLB"]
+    Ing["nginx_ingress"]
+    Lh["Longhorn"]
+    Cm["cert_manager"]
+    Edns["external_dns"]
   end
+  Bind --> Edns
+  StepCA --> Cm
+  Minio --> Lh
+  Nfs --> cluster
+  Mlb --> Ing
 ```
-
-Mermaid will not stack two subgraphs if you also draw BIND → external-dns (and the other cross-box arrows). Those edges pin the groups side by side. Mapping is:
-
-| Hub | Cluster |
-|-----|---------|
-| BIND RFC2136 | external-dns |
-| Step-CA | cert-manager |
-| MinIO, NFS export | Longhorn |
-| — | MetalLB → nginx-ingress, Argo CD |
 
 The hub can be Unraid, TrueNAS, or a spare VM. The cluster does not install BIND or MinIO for you.
 
