@@ -1,6 +1,6 @@
 # Talos on Unraid
 
-Stand up a Kubernetes cluster as **Unraid VMs** running [Talos Linux](https://www.talos.dev/). Then [bootstrap Argo CD](bootstrap.md). Do not install Ubuntu “and then kubeadm” on these VMs.
+Stand up a Kubernetes cluster as **Unraid VMs** ([Unraid VM docs](https://docs.unraid.net/unraid-os/using-unraid-to/create-virtual-machines/)) running [Talos Linux](https://www.talos.dev/v1.12/). Then [bootstrap Argo CD](bootstrap.md). Do not install Ubuntu “and then kubeadm” on these VMs.
 
 **Recommended topology:** three control planes (`talos-cp-01`–`03` at `10.0.0.11`–`.13`) + a Talos **API VIP** at `10.0.0.20` + at least one worker (`talos-worker-01` at `10.0.0.21`). We say **control plane / CP**, not master.
 
@@ -51,7 +51,7 @@ Do not run the Unraid “install a distro” path. Power on, note the maintenanc
 
 Longhorn on Talos needs extensions **baked into the installer**, not installed later.
 
-1. Open [factory.talos.dev](https://factory.talos.dev/)
+1. Open [Image Factory](https://factory.talos.dev/)
 2. Pick your Talos version (see [versions](versions.md))
 3. Add:
     - `siderolabs/iscsi-tools`

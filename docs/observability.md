@@ -1,6 +1,6 @@
 # Observability
 
-`kube-prometheus-stack` is wave **10** here so it does not block platform sync, but it is part of the starter. Delete `applications/kube-prometheus-stack.yaml` if you do not want it yet.
+[`kube-prometheus-stack`](https://github.com/prometheus-community/helm-charts/tree/main/charts/kube-prometheus-stack) is wave **10** here so it does not block platform sync, but it is part of the starter. Operator docs: [Prometheus Operator](https://prometheus-operator.dev/docs/getting-started/introduction/). Grafana: [docs](https://grafana.com/docs/grafana/latest/). Delete `applications/kube-prometheus-stack.yaml` if you do not want it yet.
 
 Namespace `monitoring` is privileged (wave 0) because exporters and node components need it.
 

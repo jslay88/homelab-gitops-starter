@@ -2,13 +2,13 @@
 
 ## metrics-server
 
-`--kubelet-insecure-tls` is enabled. Talos and kubeadm labs commonly need this for `kubectl top`.
+[metrics-server](https://github.com/kubernetes-sigs/metrics-server). `--kubelet-insecure-tls` is enabled. Talos and kubeadm labs commonly need this for `kubectl top`.
 
 **Verify:** `kubectl top nodes`
 
 ## cloudnative-pg
 
-Operator only. No database Clusters. Add those in [day-2](../day-2.md) apps.
+[CloudNativePG](https://cloudnative-pg.io/documentation/current/) operator only. No database Clusters. Add those in [day-2](../day-2.md) apps.
 
 `ServerSideApply=true` for large CRDs.
 

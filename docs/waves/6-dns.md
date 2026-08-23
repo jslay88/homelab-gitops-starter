@@ -1,6 +1,6 @@
 # Wave 6 — DNS (in-cluster)
 
-This wave only deploys [external-dns](https://kubernetes-sigs.github.io/external-dns/). It updates BIND. It is **not** a nameserver.
+This wave only deploys [external-dns](https://kubernetes-sigs.github.io/external-dns/) ([RFC2136](https://kubernetes-sigs.github.io/external-dns/latest/docs/tutorials/rfc2136/)). It updates [BIND](https://bind9.readthedocs.io/en/stable/). It is **not** a nameserver.
 
 If laptops cannot already resolve `k8s.home.example.com` via your LAN resolver → BIND setup, this Deployment will write records that nobody asks for. Do the [local DNS](../dns.md) page first (zone, TSIG, Unbound/router forward, `dig` from a laptop).
 

@@ -2,7 +2,7 @@
 
 This page is the LAN story: how `grafana.k8s.home.example.com` becomes the ingress VIP on your network, who is allowed to create that record, and how that differs from a public name that Let's Encrypt can see.
 
-Wave 6 only installs [external-dns](https://kubernetes-sigs.github.io/external-dns/). It cannot replace a nameserver. If clients cannot resolve the zone **before** the cluster exists, they will not resolve it after either.
+Wave 6 only installs [external-dns](https://kubernetes-sigs.github.io/external-dns/) ([RFC2136 tutorial](https://kubernetes-sigs.github.io/external-dns/latest/docs/tutorials/rfc2136/)). It cannot replace a nameserver. [BIND 9](https://bind9.readthedocs.io/en/stable/) on the NAS is the authoritative server; updates follow [RFC 2136](https://datatracker.ietf.org/doc/html/rfc2136). If clients cannot resolve the zone **before** the cluster exists, they will not resolve it after either.
 
 ## What “local routing” means here
 

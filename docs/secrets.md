@@ -4,6 +4,8 @@ Never commit a Kubernetes `Secret` with real data. Never commit `talosconfig`, `
 
 ## kubeseal workflow
 
+[Sealed Secrets](https://github.com/bitnami-labs/sealed-secrets#usage) — `kubeseal` encrypts to this cluster’s sealing cert only.
+
 After wave 1 is Healthy:
 
 ```bash

@@ -17,7 +17,7 @@ Same Service + EndpointSlice whether the name is internal or public. Only the In
 
 ## Objects (Kubernetes 1.35+)
 
-`Endpoints` (`apiVersion: v1`) is **deprecated** (1.33+). Do not create `kind: Endpoints` and hope the control plane mirrors it. Write an [`EndpointSlice`](https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/) yourself.
+`Endpoints` (`apiVersion: v1`) is **deprecated** (1.33+). Do not create `kind: Endpoints` and hope the control plane mirrors it. Write an [`EndpointSlice`](https://kubernetes.io/docs/concepts/services-networking/endpoint-slices/) yourself. The Service is a [selector-less Service](https://kubernetes.io/docs/concepts/services-networking/service/#services-without-selectors). The edge object is a Kubernetes [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/).
 
 | Object | Role |
 |--------|------|
@@ -227,7 +227,7 @@ kubectl -n nas-ui get certificate
 
 ## App-specific nginx annotations
 
-This controller is F5 (`nginx.org/…`), not ingress-nginx.
+This controller is [F5 NGINX Ingress](https://docs.nginx.com/nginx-ingress-controller/) (`nginx.org/…`), not ingress-nginx. Annotation reference: [docs](https://docs.nginx.com/nginx-ingress-controller/configuration/ingress-resources/advanced-configuration-with-annotations/).
 
 | Need | Annotation |
 |------|------------|

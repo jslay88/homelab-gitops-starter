@@ -78,7 +78,7 @@ If you publish names to the internet, the router or firewall port-forward (or 1:
 
 Talos holds the API VIP on **one** control-plane NIC at a time. If that node dies or you shut it down, another CP takes the address (gratuitous ARP). Clients never change their kubeconfig.
 
-Do not point `talosctl` at `.20`. The VIP needs etcd to exist. If etcd is the thing you are repairing, you need the real node IPs. Official Talos note: [Virtual IP](https://www.talos.dev/v1.12/talos-guides/network/vip/).
+Do not point `talosctl` at `.20`. The VIP needs etcd to exist. If etcd is the thing you are repairing, you need the real node IPs. Official Talos note: [Virtual IP](https://www.talos.dev/v1.12/talos-guides/network/vip/). MetalLB (ingress `.30`) is a different VIP: [Layer 2](https://metallb.io/concepts/layer2/).
 
 ## Workers
 

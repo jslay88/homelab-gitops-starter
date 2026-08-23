@@ -2,7 +2,7 @@
 
 ## cert-manager
 
-Jetstack chart, `crds.enabled: true`. Needed before ClusterIssuers (wave 4) and any Certificate.
+[cert-manager](https://cert-manager.io/docs/) (Jetstack chart, `crds.enabled: true`). Needed before ClusterIssuers (wave 4) and any Certificate. HTTP-01 and Ingress annotations: [docs](https://cert-manager.io/docs/usage/ingress/).
 
 **Verify:** `kubectl get crd certificates.cert-manager.io`
 

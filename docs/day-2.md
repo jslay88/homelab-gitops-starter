@@ -95,7 +95,7 @@ spec:
       # ...
 ```
 
-`http01-edit-in-place` is required on this stack. Without it, cert-manager creates a **second** Ingress for `/.well-known/acme-challenge`. F5 nginx does not merge two Ingresses for the same host the way you need, and that solver object is not the Service that owns the pinned MetalLB `/32`. Let's Encrypt's HTTP-01 then never hits the ingress VIP. Edit-in-place adds the challenge path to **this** Ingress so port 80 on `.30` serves it.
+`http01-edit-in-place` is required on this stack ([cert-manager Ingress annotations](https://cert-manager.io/docs/usage/ingress/#supported-annotations)). Without it, cert-manager creates a **second** Ingress for `/.well-known/acme-challenge`. F5 nginx does not merge two Ingresses for the same host the way you need, and that solver object is not the Service that owns the pinned MetalLB `/32`. Let's Encrypt's HTTP-01 then never hits the ingress VIP. Edit-in-place adds the challenge path to **this** Ingress so port 80 on `.30` serves it.
 
 `issue-temporary-certificate` gives nginx a self-signed secret so the Ingress is accepted while ACME runs. Drop it and the controller may ignore the host until `tls.secretName` exists — which never happens, because the challenge never ran.
 
@@ -107,7 +107,7 @@ Unraid, the router, a Pi, or any other box on the LAN is an Ingress → Service 
 
 ## Optional CNPG Cluster
 
-After wave 8, a one-instance Cluster is enough for a homelab app:
+After wave 8, a one-instance [Cluster](https://cloudnative-pg.io/documentation/current/cloudnative-pg.v1/#cluster) is enough for a homelab app:
 
 ```yaml
 apiVersion: postgresql.cnpg.io/v1

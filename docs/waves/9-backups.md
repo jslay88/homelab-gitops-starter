@@ -2,11 +2,11 @@
 
 ## plugin-barman-cloud
 
-CNPG plugin for backups to S3. Harmless without a Cluster. Needs an ObjectStore + credentials **per database** later (not in this starter).
+[Barman Cloud plugin](https://cloudnative-pg.io/plugin-barman-cloud/) for CNPG backups to S3 ([usage](https://cloudnative-pg.io/plugin-barman-cloud/docs/usage/)). Harmless without a Cluster. Needs an ObjectStore + credentials **per database** later (not in this starter).
 
 ## etcd-backup
 
-**Talos:** do not mount kubeadm hostPath certs. The Application ships a **suspended** CronJob and a ConfigMap with the workstation command:
+**Talos:** do not mount kubeadm hostPath certs. Use [`talosctl etcd snapshot`](https://www.talos.dev/v1.12/advanced/disaster-recovery/). The Application ships a **suspended** CronJob and a ConfigMap with the workstation command:
 
 ```bash
 talosctl etcd snapshot ./etcd-$(date -u +%Y%m%dT%H%M%SZ).snapshot

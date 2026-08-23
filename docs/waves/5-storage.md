@@ -2,7 +2,7 @@
 
 Three provisioners, three jobs. Do not pick by “what mounts.” Pick by **how the bytes move**.
 
-| | Longhorn | NFS (Unraid export) | S3 / MinIO |
+| | [Longhorn](https://longhorn.io/docs/1.12.1/) | NFS ([nfs-subdir-external-provisioner](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner)) | S3 / [MinIO](https://min.io/docs/minio/linux/index.html) |
 |--|----------|---------------------|------------|
 | What it is | Replicated **block** on worker disks | One NAS share over the LAN | Object store (HTTP) |
 | Default access | RWO | RWX | Not a filesystem (unless you FUSE it) |
@@ -75,7 +75,7 @@ Use S3 as S3. Skip `applications/csi-s3.yaml` until you have a concrete object t
 
 ## longhorn
 
-Requires Talos Image Factory extensions and `kubelet.extraMounts` from the [Talos](../talos-unraid.md) chapter.
+[Longhorn](https://longhorn.io/docs/1.12.1/) ([architecture](https://longhorn.io/docs/1.12.1/concepts/), [Talos](https://longhorn.io/docs/1.12.1/advanced-resources/os-distro-specific/talos-linux-support/)). Requires Image Factory extensions and `kubelet.extraMounts` from the [Talos](../talos-unraid.md) chapter.
 
 **Must change:** `defaultSettings.defaultReplicaCount` in `values/longhorn/values.yaml`.
 
@@ -93,12 +93,14 @@ Backup target (MinIO) is optional. When you have S3 credentials, seal them and p
 
 ## nfs-provisioner (optional)
 
+[nfs-subdir-external-provisioner](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner).
+
 **Must change:** `nfs.server` and `nfs.path` in `values/nfs-provisioner/values.yaml`.
 
 StorageClass name: `nfs` (not default). Delete the Application if you do not have an export.
 
 ## csi-s3 (optional)
 
-S3-backed PVCs via FUSE. Needs a SealedSecret the chart does not create (`secret.create: false`).
+[csi-s3](https://github.com/yandex-cloud/k8s-csi-s3) — S3-backed PVCs via FUSE. Needs a SealedSecret the chart does not create (`secret.create: false`).
 
 Delete the Application until MinIO exists, and even then prefer the S3 API over a PVC.

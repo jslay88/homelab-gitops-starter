@@ -18,7 +18,7 @@ It is not a dump of someone else's live `cluster-configs`. There are no real IPs
 2. Use this repo as a **GitHub template**. Replace `YOUR_GITHUB`, `CHANGEME`, and `example.com` in `master-application.yaml` and `applications/`.
 3. Read [local DNS](dns.md) and [Step-CA](step-ca.md) **before** you pick hostnames. The cluster cannot invent a LAN nameserver or a private CA.
 4. Pick [addresses](addressing.md) (reserved CP / worker / VIP blocks; cluster name `homelab`). **Three control planes** plus a Talos **API VIP** at `.20` so `kubectl` has one IP that survives a CP reboot. Build [Talos](talos-unraid.md) under `~/talos/homelab`, then [bootstrap Argo CD](bootstrap.md).
-5. Walk [waves 0–9](waves/index.md). Delete Application files you do not want.
+5. Walk [waves 0–9](waves/index.md). Delete Application files you do not want. Upstream docs for every pin: [versions](versions.md).
 
 ## What GitOps means here
 

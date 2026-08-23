@@ -1,6 +1,6 @@
 # Wave 3 — Ingress
 
-**F5 NGINX Ingress** from `ghcr.io/nginx/charts`, not the kubernetes/ingress-nginx chart.
+**[NGINX Ingress Controller](https://docs.nginx.com/nginx-ingress-controller/)** (F5 chart `ghcr.io/nginx/charts`), not the kubernetes/ingress-nginx project. Annotations use `nginx.org/…` — [list](https://docs.nginx.com/nginx-ingress-controller/configuration/ingress-resources/advanced-configuration-with-annotations/). Kubernetes [Ingress](https://kubernetes.io/docs/concepts/services-networking/ingress/) API is the same.
 
 The Service is `type: LoadBalancer` pinned to the MetalLB pool named `ingress`.
 

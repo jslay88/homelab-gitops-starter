@@ -4,7 +4,7 @@ A **GitOps platform** for a homelab Kubernetes cluster: Argo CD App-of-Apps, syn
 
 This is not a copy of a production lab and not an application catalog. TeslaMate, Authentik, Immich, and game servers are out of scope. You add those later.
 
-**Guide:** [jslay88.github.io/homelab-gitops-starter](https://jslay88.github.io/homelab-gitops-starter/)
+**Guide:** [jslay88.github.io/homelab-gitops-starter](https://jslay88.github.io/homelab-gitops-starter/) — pins and upstream manuals: [versions](https://jslay88.github.io/homelab-gitops-starter/versions/).
 
 ## What you get
 

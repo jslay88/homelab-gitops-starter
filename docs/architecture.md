@@ -93,7 +93,7 @@ Public names skip BIND and Step-CA: public DNS + Let's Encrypt HTTP-01 on port 8
 | SealedSecrets | Secrets stay in Git, bound to one cluster | SOPS + age, External Secrets |
 | Talos API VIP + MetalLB L2 | One kubeconfig IP; app LBs without BGP | kube-vip for everything, Cilium L2 |
 | Longhorn default, NFS for RWX, S3 for backups | Block IO on workers; NAS share when many pods need one tree; object API for archives. See [storage](waves/5-storage.md) | local-path (no replica), rook-ceph (heavier), csi-s3 as a fake disk |
-| Flannel (Talos default) | Ships with Talos; **does not enforce NetworkPolicy** | Cilium if you want policy |
+| [Flannel](https://github.com/flannel-io/flannel) (Talos default) | Ships with Talos; **does not enforce NetworkPolicy** | Cilium if you want policy |
 
 ## Pod Security
 

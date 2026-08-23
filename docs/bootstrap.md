@@ -22,6 +22,8 @@ If `server` is a node IP (`10.0.0.11`), you generated the cluster against the wr
 
 ## 2. Install Argo CD (Helm, one shot)
 
+Chart docs: [Argo CD](https://argo-cd.readthedocs.io/en/stable/operator-manual/installation/). After wave 7, Git owns this release.
+
 ```bash
 helm repo add argo https://argoproj.github.io/argo-helm
 helm repo update

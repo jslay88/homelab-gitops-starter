@@ -6,7 +6,7 @@ You almost always want **one** of these for day one, not neither.
 
 ## letsencrypt (public names)
 
-ClusterIssuer using ACME HTTP-01 and ingress class `nginx`.
+[Let's Encrypt](https://letsencrypt.org/docs/) [ClusterIssuer](https://cert-manager.io/docs/configuration/acme/) using [ACME HTTP-01](https://cert-manager.io/docs/configuration/acme/http01/) and ingress class `nginx`. Challenge type: [HTTP-01](https://letsencrypt.org/docs/challenge-types/#http-01-challenge).
 
 **Must change:** `email` in `values/letsencrypt/issuer.yaml`.
 
@@ -36,7 +36,7 @@ kubectl describe clusterissuer letsencrypt
 
 This is optional in the Application list and **not** optional if you want `https://grafana.k8s.home.example.com` without a browser warning.
 
-The chart is only the controller. The `StepClusterIssuer` points at Step-CA **outside** the cluster. The CA, provisioner password, `caBundle`, client trust, and the correct Ingress annotations are all on the [Step-CA](../step-ca.md) page — read that before filling YAML.
+The [step-issuer](https://github.com/smallstep/step-issuer) chart is only the controller ([cert-manager tutorial](https://smallstep.com/docs/tutorials/kubernetes-cert-manager/)). The `StepClusterIssuer` points at [Step-CA](https://smallstep.com/docs/step-ca/) **outside** the cluster. The CA, provisioner password, `caBundle`, client trust, and the correct Ingress annotations are all on the [Step-CA](../step-ca.md) page — read that before filling YAML.
 
 **Must change** in `values/step-issuer/manifests/issuer.yaml`:
 
