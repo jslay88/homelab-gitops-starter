@@ -20,6 +20,8 @@ Open an issue on [jslay88/homelab-gitops-starter](https://github.com/jslay88/hom
 
 **Fork** this repo to send a PR. That is the opposite of “Use this template” for *your* GitOps remote — a public fork of the starter is for contributing, not for running the cluster.
 
+Agents working in a clone must follow [AGENTS.md](https://github.com/jslay88/homelab-gitops-starter/blob/main/AGENTS.md). Do not add a second license; MIT is already in `LICENSE`.
+
 ## How to work
 
 1. Fork. Branch from `main`.

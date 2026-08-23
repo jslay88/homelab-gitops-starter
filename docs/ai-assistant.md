@@ -2,6 +2,8 @@
 
 An editor agent (Cursor or anything that can run tools) can help **read** this repo, **inspect** the cluster, and **draft** Git changes. It does not replace Argo. Git stays the control plane.
 
+Repo rules for agents: [AGENTS.md](https://github.com/jslay88/homelab-gitops-starter/blob/main/AGENTS.md) (Cursor and Claude). Cursor skills: `.cursor/skills/`. Claude Code: `CLAUDE.md` + `.claude/skills/`.
+
 Two ways to talk to the cluster:
 
 | Tool | What it is | Use when |

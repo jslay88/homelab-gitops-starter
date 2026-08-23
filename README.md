@@ -26,6 +26,8 @@ Argo CD only watches `applications/`. Docs and CI are ignored.
 
 Delete an Application file under `applications/` to skip that component (NFS, Step-CA, csi-s3, etcd-backup, kube-prometheus-stack, and others are optional).
 
+Agents (Cursor, Claude Code): [AGENTS.md](AGENTS.md). Skills: `.cursor/skills/` and `.claude/skills/`.
+
 ## Help and contributing
 
 - [Get help](https://jslay88.github.io/homelab-gitops-starter/help/) — then [open an issue](https://github.com/jslay88/homelab-gitops-starter/issues/new?template=docs.yml)

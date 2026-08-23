@@ -2,7 +2,7 @@
 
 The public repo is a **template** other people copy. Keep it generic. Your homelab stays in **your** private template instance.
 
-Full guide (same rules, with in-site links): [Contributing](https://jslay88.github.io/homelab-gitops-starter/contributing/).
+Full guide (same rules, with in-site links): [Contributing](https://jslay88.github.io/homelab-gitops-starter/contributing/). Agents: [AGENTS.md](AGENTS.md).
 
 Stuck? [Get help](https://jslay88.github.io/homelab-gitops-starter/help/) — then [open an issue](https://github.com/jslay88/homelab-gitops-starter/issues/new?template=docs.yml).
 
