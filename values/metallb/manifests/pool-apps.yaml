@@ -1,4 +1,4 @@
-# CHANGEME: dynamic LB pool. Do not overlap nodes, DHCP, or the ingress VIP.
+# CHANGEME: dynamic LB pool. Do not overlap nodes, DHCP, the API VIP (.20), or ingress (.30).
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:

@@ -4,7 +4,8 @@ These sit **outside** the cluster. The starter documents them; it does not insta
 
 | Need | Why the stack wants it | Unraid-shaped default | Substitute / skip |
 |------|------------------------|----------------------|-------------------|
-| L2 VIP range | LoadBalancer Services (ingress, later apps) | Unused IPs on the same L2 as the nodes | kube-vip or Cilium L2 later. **Do not skip** if you want this ingress model. |
+| Kubernetes API VIP | One kubeconfig URL that survives a CP reboot | Unused LAN IP (example `.20`), same L2 as the CPs | Talos `machine.network.interfaces[].vip`. **Do this** if you have 3 CPs. Not MetalLB. |
+| L2 LB range | LoadBalancer Services (ingress, later apps) | Unused IPs on the same L2 as the nodes (example ingress `.30`, apps `.50–.99`) | MetalLB L2. **Do not skip** if you want this ingress model. Do not put `.20` in a pool. |
 | Internal CA | Names that are not on the public internet (`*.k8s.home.example.com`) | [Step-CA](step-ca.md) on Unraid `:9005` | Let's Encrypt only, or mkcert. **Skip** if every name is public. |
 | Public ACME | Browser-trusted certs for names the world can resolve | Let's Encrypt HTTP-01 through nginx | **Skip** if the lab is internal-only. Needs port 80 from the internet. |
 | Authoritative DNS | external-dns creates A/TXT in **one** zone | [BIND](dns.md) on Unraid `:53` + TSIG (RFC2136) | Cloudflare / Route53, or a wildcard A on the router. |

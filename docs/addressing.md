@@ -4,6 +4,8 @@ Reserve **blocks**, not the next free DHCP lease. You will add workers and pinne
 
 **Use three control-plane nodes.** That is the recommended topology in this guide, not a later luxury. One CP means any reboot, disk check, or Unraid VM migrate takes the API and etcd with it — you cannot `kubectl` or Argo-sync your way through maintenance. Three CPs give etcd quorum: you can shut one down and the cluster stays up. Two is worse than one (either member dying loses quorum). Skip two.
 
+Give `kubectl` **one** address that is not a node: a Talos **API VIP** at `.20`. That is not MetalLB and not ingress. Setup is in [Talos on Unraid](talos-unraid.md#kubernetes-api-vip).
+
 This guide’s examples use `10.0.0.0/24` and the cluster name `homelab` (Talos files under `~/talos/homelab`). Use your own prefix; keep the **grouping**.
 
 ## Example layout (`10.0.0.0/24`)
@@ -12,15 +14,16 @@ This guide’s examples use `10.0.0.0/24` and the cluster name `homelab` (Talos 
 |-------|--------|------|
 | Infra | `.1` | Gateway / LAN resolver (router, Unbound, Pi-hole) |
 | Infra | `.2` | Unraid (BIND, Step-CA, NFS, MinIO) |
-| Control plane | `.11`–`.19` | Talos CP nodes. Start at `.11`. Room for three (or more) without touching workers. |
-| Pinned VIP | `.20` | Ingress LoadBalancer (MetalLB pool `ingress`). Seam between CP and workers. |
+| Control plane | `.11`–`.19` | Talos CP **nodes**. Start at `.11`. Room for three (or more) without touching workers. |
+| Kubernetes API VIP | `.20` | Shared Talos VIP for `kube-apiserver`. kubeconfig points here. **Not** a VM. **Not** MetalLB. |
 | Workers | `.21`–`.29` | Talos workers. Start at `.21`. |
+| Ingress VIP | `.30` | Ingress LoadBalancer (MetalLB pool `ingress`). |
 | Other pinned VIPs | `.31`–`.39` | Stable LBs you do not want recycled (optional) |
 | Dynamic LBs | `.50`–`.99` | MetalLB pool `apps` |
 
-Recommended day-one cluster: **three** control planes at `10.0.0.11`–`.13`, **one** worker at `10.0.0.21` (add `.22` / `.23` when you want Longhorn replicas), ingress at `10.0.0.20`. Leave `.14`–`.19` empty.
+Recommended day-one cluster: **three** control planes at `10.0.0.11`–`.13`, API VIP at `10.0.0.20`, **one** worker at `10.0.0.21` (add `.22` / `.23` when you want Longhorn replicas), ingress at `10.0.0.30`. Leave `.14`–`.19` empty.
 
-Do **not** put the ingress VIP inside the control-plane or worker blocks. A VIP is not a node. DHCP must not hand out any of these ranges.
+Do **not** put either VIP inside the control-plane or worker blocks. A VIP is not a node. DHCP must not hand out any of these ranges. Do **not** put `.20` in a MetalLB pool — Talos already owns that ARP.
 
 ```text
 10.0.0.1      router
@@ -29,9 +32,10 @@ Do **not** put the ingress VIP inside the control-plane or worker blocks. A VIP 
 10.0.0.12     talos-cp-02
 10.0.0.13     talos-cp-03
 10.0.0.14     (reserved)
-10.0.0.20     ingress VIP
+10.0.0.20     kubernetes API VIP   ← kubeconfig / kubectl
 10.0.0.21     talos-worker-01
 10.0.0.22     (reserved)
+10.0.0.30     ingress VIP          ← MetalLB, browsers
 10.0.0.50-99  MetalLB apps
 ```
 
@@ -43,12 +47,14 @@ If your LAN is already `10.3.0.0/24` plus a Kubernetes VLAN, keep that. The poin
 
 This is what you want if you ever reboot a CP VM, apply a Talos upgrade, or let Unraid move a disk. With one CP, that work **is** a cluster outage: no API, no etcd, no Argo, no `kubectl`. Apps on workers may keep running until something needs the API (new pods, cert renew, a crash). That is a bad time to discover you needed quorum.
 
-| | 3 CP (do this) | 1 CP (only if RAM is gone) |
-|--|----------------|----------------------------|
-| Maintenance | Shut down or upgrade **one** CP. The other two keep etcd quorum. `kubectl` still works if your kubeconfig can reach a live member. | Any reboot of that VM is an API outage. Restore from snapshot if the disk is gone. |
+Three nodes is not enough by itself. `kubectl` and the kubelets talk to **one** `--server`. If that URL is `https://10.0.0.11:6443`, rebooting `talos-cp-01` still looks like an outage even though etcd has quorum. The API VIP is the missing piece: one IP, whichever CP is healthy.
+
+| | 3 CP + API VIP (do this) | 1 CP (only if RAM is gone) |
+|--|--------------------------|----------------------------|
+| Maintenance | Shut down or upgrade **one** CP. The other two keep etcd quorum. The VIP moves. `kubectl` keeps working. | Any reboot of that VM is an API outage. Restore from snapshot if the disk is gone. |
 | VMs / RAM | Three × ~4 GiB. Twelve gigabytes is the tax. | One × 4 GiB. |
-| `talosctl bootstrap` | Once, on `.11`. Apply the same `controlplane.yaml` family to `.12` and `.13` (per-node network patches). | Once, on `.11`. |
-| How you talk to the API | `talosctl config endpoint` with **all three** IPs. For `kubectl`, prefer a DNS name with three A records, or point `--server` at a CP you are not rebooting. | `https://10.0.0.11:6443` is fine. |
+| `talosctl bootstrap` | Once, on `.11`. Per-node network patches on `.12` and `.13`. Same `vip.ip` on all three. | Once, on `.11`. Skip the VIP. |
+| How you talk to the API | kubeconfig `https://10.0.0.20:6443`. `talosctl config endpoint` is the **three node IPs**, not the VIP. | `https://10.0.0.11:6443` is fine. |
 | etcd | Quorum of 3. One dead member is OK. Two dead → cluster unavailable. | One member. That VM **is** etcd. |
 | Longhorn | Unrelated. Replicas live on **workers**. | Same. |
 
@@ -58,6 +64,19 @@ Unraid is still a single hypervisor. Three CP VMs do not survive the host dying.
 
 Growing 1 → 3 later works (`talosctl` join extra CP machines) but you will do your first upgrades on a cluster that cannot stay up during those upgrades. Prefer three from day one. `.14`–`.19` stay empty.
 
+## Kubernetes API VIP vs ingress VIP
+
+| | API VIP `.20` | Ingress VIP `.30` |
+|--|---------------|-------------------|
+| Who announces it | **Talos** (L2, etcd election among CPs) | **MetalLB** (speakers on workers) |
+| Who uses it | `kubectl`, Helm, Argo, kubelets | Browsers, Let's Encrypt HTTP-01 |
+| Port that matters | `6443` | `80` / `443` |
+| In a MetalLB pool? | **No** | Yes — pool `ingress` `/32` |
+
+Talos holds the API VIP on **one** control-plane NIC at a time. If that node dies or you shut it down, another CP takes the address (gratuitous ARP). Clients never change their kubeconfig.
+
+Do not point `talosctl` at `.20`. The VIP needs etcd to exist. If etcd is the thing you are repairing, you need the real node IPs. Official Talos note: [Virtual IP](https://www.talos.dev/v1.12/talos-guides/network/vip/).
+
 ## Workers
 
 One worker is enough to learn GitOps. Longhorn `defaultReplicaCount` must be `1`. Two workers can do replica `2`. Three workers can do `3` (the usual Longhorn default).
@@ -66,9 +85,9 @@ Adding a worker is: new VM, same Image Factory disk, `worker.yaml` with a **new*
 
 ## MetalLB vs node IPs
 
-MetalLB announces **extra** IPs on the same L2. They must not collide with nodes, DHCP, or Unraid.
+MetalLB announces **extra** IPs on the same L2. They must not collide with nodes, DHCP, Unraid, or the API VIP.
 
-- Pool `ingress`: a `/32` (`10.0.0.20/32`) so the ingress Service is pinned.
+- Pool `ingress`: a `/32` (`10.0.0.30/32`) so the ingress Service is pinned.
 - Pool `apps`: a range (`10.0.0.50-10.0.0.99`) for everything else.
 
-Reserve the node blocks in the router DHCP server (or static-only those leases).
+Reserve the node blocks **and** `.20` / `.30` in the router DHCP server (or static-only those leases).

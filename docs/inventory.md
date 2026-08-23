@@ -9,10 +9,10 @@ Do this **before** editing YAML. Every `CHANGEME` in the repo maps to a row here
 | LAN CIDR | | `10.0.0.0/24` | See [addressing](addressing.md) — reserve blocks, do not pack nodes |
 | Gateway | | `10.0.0.1` | Talos default route, DNS upstream |
 | Control plane block | | `10.0.0.11`–`.19` | Use `.11` `.12` `.13` on day one (recommended). Leave `.14`–`.19` empty. |
+| Kubernetes API VIP | | `10.0.0.20` | Talos shared VIP. kubeconfig `https://10.0.0.20:6443`. Not a VM, not MetalLB. |
 | Worker block | | `10.0.0.21`–`.29` | First worker is `.21`. Not `.12`. |
-| Kubernetes API | | `https://10.0.0.11:6443` | kubeconfig, Talos |
 | MetalLB pool (apps) | | `10.0.0.50-10.0.0.99` | `values/metallb` |
-| Ingress VIP | | `10.0.0.20` | Own block — not a node address |
+| Ingress VIP | | `10.0.0.30` | MetalLB pool `ingress`. Not `.20`. |
 | LAN resolver (DHCP DNS) | | `10.0.0.1` | Router / Pi-hole; must forward the cluster zone |
 | DNS zone (internal) | | `k8s.home.example.com` | BIND + external-dns + Step-CA names |
 | DNS zone (public, optional) | | `k8s.example.com` | Let's Encrypt hostnames |

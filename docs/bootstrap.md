@@ -13,8 +13,12 @@ Configs from the Talos chapter live under `~/talos/homelab`:
 ```bash
 export KUBECONFIG=~/talos/homelab/kubeconfig
 export TALOSCONFIG=~/talos/homelab/_out/talosconfig
+kubectl config view --minify | grep server
+# expect the API VIP: https://10.0.0.20:6443
 kubectl get nodes
 ```
+
+If `server` is a node IP (`10.0.0.11`), you generated the cluster against the wrong endpoint. Fix that in Talos before you rely on maintenance: [API VIP](talos-unraid.md#kubernetes-api-vip).
 
 ## 2. Install Argo CD (Helm, one shot)
 

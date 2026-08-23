@@ -1,4 +1,4 @@
-# CHANGEME: pinned ingress VIP. Keep it out of the CP (.11-.19) and worker (.21-.29) blocks.
+# CHANGEME: pinned ingress VIP. Keep it out of CP (.11-.19), API VIP (.20), and workers (.21-.29).
 apiVersion: metallb.io/v1beta1
 kind: IPAddressPool
 metadata:
@@ -6,4 +6,4 @@ metadata:
   namespace: metallb-system
 spec:
   addresses:
-    - 10.0.0.20/32
+    - 10.0.0.30/32

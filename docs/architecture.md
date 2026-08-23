@@ -78,7 +78,7 @@ flowchart TD
 ```
 
 1. The laptop asks whatever DHCP gave it (router, Pi-hole). That resolver must **forward** `k8s.home.example.com` to BIND, or BIND must *be* the resolver.
-2. BIND returns the ingress VIP (`10.0.0.20` in the examples — a reserved VIP, not a node IP). See [addressing](addressing.md).
+2. BIND returns the ingress VIP (`10.0.0.30` in the examples — a reserved MetalLB VIP, not a node IP and not the API VIP). See [addressing](addressing.md).
 3. The browser connects to that VIP with SNI `grafana.k8s.home.example.com`.
 4. nginx presents a leaf cert minted by Step-CA. The laptop must trust the **root**, not the leaf.
 
@@ -91,7 +91,7 @@ Public names skip BIND and Step-CA: public DNS + Let's Encrypt HTTP-01 on port 8
 | App of Apps | Each app is a file you can delete or ignoreDifferences | ApplicationSet (better when you have dozens of identical apps) |
 | F5 nginx-ingress chart | The kubernetes/ingress-nginx project is not the path we want to start people on | Traefik, Cilium Gateway |
 | SealedSecrets | Secrets stay in Git, bound to one cluster | SOPS + age, External Secrets |
-| MetalLB L2 | Homelab LAN, no BGP required | kube-vip, Cilium L2 announcements |
+| Talos API VIP + MetalLB L2 | One kubeconfig IP; app LBs without BGP | kube-vip for everything, Cilium L2 |
 | Longhorn | Block RWO on node disks; works on Talos with extensions | local-path (no replica), rook-ceph (heavier) |
 | Flannel (Talos default) | Ships with Talos; **does not enforce NetworkPolicy** | Cilium if you want policy |
 

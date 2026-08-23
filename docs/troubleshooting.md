@@ -7,12 +7,19 @@
 - **Deployment `.status`:** Kubernetes 1.35+ adds fields older Argo schemas do not know. Applications that need it have `ServerSideDiff=false` or ignore `.status`.
 - **Wrong `repoURL`:** you left `YOUR_GITHUB` in the Application.
 
+## kubectl dies when one control plane reboots
+
+- kubeconfig `server` is a **node** IP (`https://10.0.0.11:6443`) instead of the API VIP (`https://10.0.0.20:6443`). See [API VIP](talos-unraid.md#kubernetes-api-vip).
+- VIP never came up: `ping 10.0.0.20` fails after bootstrap. Check `vip.ip` is on **all three** CP configs and on **no** worker. `talosctl get addresses` on each CP.
+- `.20` is also in a MetalLB pool or a DHCP lease — two owners fighting ARP.
+- You pointed `talosctl config endpoint` at the VIP and now cannot recover etcd. Point it at `.11` `.12` `.13`.
+
 ## MetalLB has no EXTERNAL-IP
 
 - Nodes and the pool must share L2 (same VLAN/bridge).
 - PSA: `metallb-system` must be `enforce=privileged`.
 - Speaker DaemonSet not Ready: `kubectl -n metallb-system describe ds`.
-- Address already used on the LAN (another VM, Unraid, a reservation).
+- Address already used on the LAN (another VM, Unraid, a reservation), or you reused the API VIP `.20` in a pool.
 
 ## Longhorn will not start on Talos
 

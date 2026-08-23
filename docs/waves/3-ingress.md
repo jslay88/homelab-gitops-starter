@@ -12,6 +12,6 @@ On a single worker, anti-affinity cannot spread two replicas. Either keep `repli
 
 ```bash
 kubectl -n nginx-ingress get svc nginx-ingress-controller
-# EXTERNAL-IP should be the ingress VIP
+# EXTERNAL-IP should be the ingress VIP (10.0.0.30 in the examples — not the API VIP)
 kubectl get ingressclass
 ```
