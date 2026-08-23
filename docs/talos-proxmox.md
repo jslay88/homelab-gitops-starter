@@ -2,7 +2,7 @@
 
 Same cluster as [Talos on Unraid](talos-unraid.md). Only the VM host changes.
 
-Create two VMs to start (`talos-cp-01`, `talos-worker-01`). Same [addressing](addressing.md) as Unraid: CP in `.11`–`.19`, workers in `.21`–`.29`. Three control-plane VMs is a later choice, not the default.
+Create **four** VMs to start: `talos-cp-01`–`03` and `talos-worker-01`. Same [addressing](addressing.md) as Unraid: CP in `.11`–`.19`, workers in `.21`–`.29`. Three control planes are recommended so you can maintain one guest without losing the API.
 
 [Talos Proxmox docs](https://docs.siderolabs.com/talos/v1.12/platform-specific-installations/virtualized-platforms/proxmox):
 

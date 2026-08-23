@@ -8,7 +8,7 @@ Do this **before** editing YAML. Every `CHANGEME` in the repo maps to a row here
 | Cluster name | | `homelab` | Talos `gen config` (`~/talos/homelab`) |
 | LAN CIDR | | `10.0.0.0/24` | See [addressing](addressing.md) — reserve blocks, do not pack nodes |
 | Gateway | | `10.0.0.1` | Talos default route, DNS upstream |
-| Control plane block | | `10.0.0.11`–`.19` | First CP is `.11`. Leave the rest empty until you add CP-02/03. |
+| Control plane block | | `10.0.0.11`–`.19` | Use `.11` `.12` `.13` on day one (recommended). Leave `.14`–`.19` empty. |
 | Worker block | | `10.0.0.21`–`.29` | First worker is `.21`. Not `.12`. |
 | Kubernetes API | | `https://10.0.0.11:6443` | kubeconfig, Talos |
 | MetalLB pool (apps) | | `10.0.0.50-10.0.0.99` | `values/metallb` |
