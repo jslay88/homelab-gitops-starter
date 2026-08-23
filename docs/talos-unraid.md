@@ -65,7 +65,7 @@ Use that as `--install-image`.
 The YAML below is **patches**. Talos merges them into `_out/controlplane.yaml` and `_out/worker.yaml`.
 
 ```bash
-export CLUSTER_NAME="friend-k8s"
+export CLUSTER_NAME="k8s"
 export CP_IP="192.168.1.10"
 export WORKER_IP="192.168.1.11"
 export INSTALL_IMAGE="factory.talos.dev/installer/<SCHEMATIC_ID>:v1.12.x"
@@ -97,7 +97,7 @@ machine:
 
 If the worker has a **second** disk for Longhorn, add a user volume / mount for that disk in a worker-only patch after you see the device name (`talosctl get disks --insecure --nodes $WORKER_IP`). A single-disk lab can keep `/var/lib/longhorn` on the OS disk.
 
-**`patches/controlplane-network.yaml`** / **`patches/worker-network.yaml`**: static IP + gateway + nameservers (usually the router). Skip if DHCP is fine.
+**`patches/controlplane-network.yaml`** / **`patches/worker-network.yaml`**: static IP + gateway + nameservers. Nameservers must be the **LAN resolver** (router / Pi-hole), the same one that [forwards `k8s.home.example.com` to BIND](dns.md). If you only set `8.8.8.8`, nodes and pods cannot resolve internal Ingress hosts. Skip the static-IP block if DHCP is fine, but still check what DHCP hands out for DNS.
 
 ```yaml
 machine:

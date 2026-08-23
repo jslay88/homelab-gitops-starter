@@ -1,3 +1,5 @@
+Full procedure (Unraid install, ca.json 24h max, Ingress annotations): guide page "Step-CA".
+
 Fill `issuer.yaml` from `step ca provisioner list` on the host that runs Step-CA.
 
 Seal:

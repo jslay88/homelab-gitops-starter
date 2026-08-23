@@ -1,3 +1,5 @@
+Create the BIND zone and LAN forward first: the guide page "Local DNS and routing".
+
 Seal the TSIG secret before this Deployment will stay Ready:
 
 ```bash

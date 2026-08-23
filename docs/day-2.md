@@ -42,7 +42,11 @@ spec:
 
 Add a Namespace in `values/namespaces/` if you want PSS labels before the app syncs (wave 0).
 
-## First Ingress + Certificate
+## Internal Ingress (LAN + Step-CA)
+
+Hostname in `k8s.home.example.com`. DNS: [local DNS](dns.md). TLS: [Step-CA](step-ca.md).
+
+`cert-manager.io/cluster-issuer: step-issuer` is **wrong**. StepClusterIssuer is not a cert-manager ClusterIssuer.
 
 ```yaml
 apiVersion: networking.k8s.io/v1
@@ -50,14 +54,16 @@ kind: Ingress
 metadata:
   name: my-app
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt
+    cert-manager.io/issuer: step-issuer
+    cert-manager.io/issuer-kind: StepClusterIssuer
+    cert-manager.io/issuer-group: certmanager.step.sm
 spec:
   ingressClassName: nginx
   tls:
-    - hosts: ["app.k8s.example.com"]
+    - hosts: ["my-app.k8s.home.example.com"]
       secretName: my-app-tls
   rules:
-    - host: app.k8s.example.com
+    - host: my-app.k8s.home.example.com
       http:
         paths:
           - path: /
@@ -69,7 +75,25 @@ spec:
                   number: 80
 ```
 
-If you use Step-CA, set `cert-manager.io/cluster-issuer: step-issuer` (match the issuer name you created) and an internal hostname.
+After sync: `dig +short my-app.k8s.home.example.com` from a laptop should be the ingress VIP, and `kubectl get certificate -n my-app` should be Ready.
+
+## Public Ingress (Let's Encrypt)
+
+```yaml
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: letsencrypt
+spec:
+  ingressClassName: nginx
+  tls:
+    - hosts: ["app.k8s.example.com"]
+      secretName: my-app-public-tls
+  rules:
+    - host: app.k8s.example.com
+      # ...
+```
+
+The name must resolve **on the internet** to whatever faces port 80 (hairpin or WAN). Staging first.
 
 ## Optional CNPG Cluster
 

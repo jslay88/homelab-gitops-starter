@@ -1,9 +1,37 @@
-# Wave 6 — DNS
+# Wave 6 — DNS (in-cluster)
 
-One [external-dns](https://kubernetes-sigs.github.io/external-dns/) Deployment, RFC2136, **one** zone.
+This wave only deploys [external-dns](https://kubernetes-sigs.github.io/external-dns/). It updates BIND. It is **not** a nameserver.
 
-**Must change:** `--rfc2136-host`, `--rfc2136-zone`, `--domain-filter`, TSIG key name. Seal the TSIG secret as `tsig` / key `secret` in namespace `external-dns`.
+If laptops cannot already resolve `k8s.home.example.com` via your LAN resolver → BIND setup, this Deployment will write records that nobody asks for. Do the [local DNS](../dns.md) page first (zone, TSIG, Unbound/router forward, `dig` from a laptop).
 
-**Skip:** delete `applications/external-dns.yaml` and create A records yourself.
+## What this repo ships
 
-Cloudflare: replace args with `--provider=cloudflare` and a sealed API token. Do not leave RFC2136 flags pointing at `CHANGEME`.
+One Deployment, RFC2136, **one** zone. Args live in `values/external-dns/deployment.yaml`.
+
+**Must change:**
+
+| Flag / object | Example |
+|---------------|---------|
+| `--rfc2136-host` | BIND LAN IP (`192.168.1.2`) |
+| `--rfc2136-zone` | `k8s.home.example.com` |
+| `--domain-filter` | **same** zone |
+| `--rfc2136-tsig-keyname` | `externaldns-key` |
+| Secret `tsig` / key `secret` | Sealed TSIG secret (see [secrets](../secrets.md)) |
+
+The pod will CrashLoop until that Secret exists. Wave 1 must be Healthy before you seal it.
+
+**Skip:** delete `applications/external-dns.yaml` and use a wildcard A record on the router, as described in the DNS page.
+
+## Cloudflare instead
+
+Replace the args with `--provider=cloudflare` and a sealed API token. Do not leave RFC2136 flags pointing at example IPs. That path updates **public** DNS; it does not create `*.k8s.home.example.com` on the LAN.
+
+## Verify
+
+```bash
+kubectl -n external-dns logs deploy/external-dns
+# BIND should show UPDATE log lines; then from a laptop:
+dig +short grafana.k8s.home.example.com
+```
+
+Ownership TXT records use prefix `external-dns-` and owner-id `k8s`. Leave those unique if a second cluster ever shares the zone.

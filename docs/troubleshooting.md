@@ -25,14 +25,38 @@
 ## ACME HTTP-01 fails
 
 - Ingress VIP not reachable on port 80 from the internet.
-- DNS for the name does not point at that VIP yet (chicken and egg: create the record once, then let external-dns own it).
-- You are hitting production LE rate limits — use staging.
+- You used a `*.k8s.home.example.com` name. Let's Encrypt cannot see those. Use [Step-CA](step-ca.md).
+- Public DNS does not point at that VIP yet (chicken and egg: create the record once, then let external-dns or Cloudflare own it).
+- Production LE rate limits — use staging.
+
+## Laptop cannot resolve `*.k8s.home.example.com`
+
+Work top-down. Full map: [local DNS](dns.md).
+
+1. `dig grafana.k8s.home.example.com @<BIND-IP> +norecurse` — if this fails, the zone or record is wrong (BIND, wildcard, or external-dns never wrote the A).
+2. `dig grafana.k8s.home.example.com @<router-or-pihole>` — if only this fails, the **domain override / forward** is missing. DHCP clients never talk to BIND directly in topology A.
+3. `dig grafana.k8s.home.example.com` with no `@` — if this fails, the laptop is not using the LAN resolver (VPN DNS, hardcoded `1.1.1.1`, phone on LTE).
+4. Talos nodes: `machine.network.nameservers` must be the LAN resolver, not only public DNS, or in-cluster lookups of home names fail.
 
 ## RFC2136 / TSIG
 
-- BIND must allow updates from the **pod CIDR or NAT** the cluster uses, not only the node IPs, depending on how you SNAT.
-- Secret key name must match `--rfc2136-tsig-keyname`.
-- Clock skew breaks TSIG.
+- Secret `tsig` missing → external-dns CrashLoop.
+- `--rfc2136-tsig-keyname` ≠ BIND `key` name.
+- `--rfc2136-zone` ≠ `--domain-filter` ≠ the actual zone in `named.conf`.
+- Clock skew more than a few minutes.
+- BIND logs `REFUSED`: TSIG not sent, or `update-policy` too tight.
+- Source IP in the BIND log is a **node** IP (masquerade), not a pod IP. Allow that plus the key; do not open the zone to the whole internet.
+
+## Step-CA / certificates stay Issuing
+
+Full procedure: [Step-CA](step-ca.md).
+
+- Ingress used `cert-manager.io/cluster-issuer: step-issuer`. That looks for a cert-manager ClusterIssuer. Use `issuer` + `issuer-kind: StepClusterIssuer` + `issuer-group: certmanager.step.sm`.
+- `caBundle` is not the current root, or is not raw base64 of the PEM.
+- `kid` / provisioner name / password mismatch (`step ca provisioner list`).
+- Pods cannot reach `https://<ca-host>:9005` (Unraid firewall, wrong IP).
+- `duration: 24h` exceeds `maxTLSCertDuration` in `ca.json`.
+- Browser warns but Certificate is Ready: root not in **that** device's trust store (Firefox has its own). Hitting the VIP by IP also fails SAN checks.
 
 ## SealedSecret stays Error
 

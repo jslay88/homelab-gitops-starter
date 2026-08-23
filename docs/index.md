@@ -16,8 +16,9 @@ It is not a dump of someone else's live `cluster-configs`. There are no real IPs
 
 1. Fill in the [inventory](inventory.md) on paper or in a notes file.
 2. Use this repo as a **GitHub template**. Replace `YOUR_GITHUB`, `CHANGEME`, and `example.com` in `master-application.yaml` and `applications/`.
-3. Build [Talos](talos-unraid.md), then [bootstrap Argo CD](bootstrap.md).
-4. Walk [waves 0–9](waves/index.md). Delete Application files you do not want.
+3. Read [local DNS](dns.md) and [Step-CA](step-ca.md) **before** you pick hostnames. The cluster cannot invent a LAN nameserver or a private CA.
+4. Build [Talos](talos-unraid.md) (configs live under `~/talos/k8s`), then [bootstrap Argo CD](bootstrap.md).
+5. Walk [waves 0–9](waves/index.md). Delete Application files you do not want.
 
 ## What GitOps means here
 
@@ -35,6 +36,15 @@ After the first apply, you do not `helm upgrade` platform charts by hand. You ch
 
 We use **App of Apps** (one YAML file per Application), not ApplicationSet. Homelab platform apps are few and different from each other — Helm-only, raw manifests, extra `ignoreDifferences`. A shared generator fights that.
 
+## Two kinds of hostname
+
+| Kind | Example | DNS | Certificate |
+|------|---------|-----|-------------|
+| LAN only | `grafana.k8s.home.example.com` | Your BIND / router ([DNS](dns.md)) | [Step-CA](step-ca.md) |
+| Public | `app.k8s.example.com` | Public DNS | Let's Encrypt |
+
+If you skip both BIND and Step-CA, you can still reach apps by IP or by `/etc/hosts`, with browser warnings. That is a worse lab.
+
 ## Out of scope
 
-Workloads. Identity products. Ad-blocking DNS. A descheduler. Multi-instance Postgres HA. Cilium. Those are [left out on purpose](left-out.md).
+Workloads. Identity products. Ad-blocking DNS as a *cluster* component (Pi-hole can sit in front of BIND later). A descheduler. Multi-instance Postgres HA. Cilium. Those are [left out on purpose](left-out.md).

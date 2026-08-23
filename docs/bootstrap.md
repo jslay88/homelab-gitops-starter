@@ -2,10 +2,17 @@
 
 Manual steps happen **once**. After that, Git is the control plane.
 
+## 0. DNS and CA are not optional surprises
+
+If you want `https://something.k8s.home.example.com` from a laptop, finish [local DNS](dns.md) (zone + forward + `dig`) and have [Step-CA](step-ca.md) listening **before** you care about wave 4/6. You can bootstrap Argo without them; Ingresses will just not be useful.
+
 ## 1. Point kubectl at the cluster
 
+Configs from the Talos chapter live under `~/talos/k8s`:
+
 ```bash
-export KUBECONFIG=~/talos/friend-k8s/kubeconfig
+export KUBECONFIG=~/talos/k8s/kubeconfig
+export TALOSCONFIG=~/talos/k8s/_out/talosconfig
 kubectl get nodes
 ```
 

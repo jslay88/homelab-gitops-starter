@@ -51,6 +51,39 @@ flowchart LR
 
 The hub can be Unraid, TrueNAS, or a spare VM. The cluster does not install BIND or MinIO for you.
 
+## How a LAN request is routed
+
+This is the path that [DNS](dns.md) and [Step-CA](step-ca.md) exist for. Nothing in Kubernetes replaces either hop.
+
+```mermaid
+flowchart TD
+  user[Laptop_on_LAN]
+  dhcp[DHCP_nameserver]
+  bind[BIND_k8s.home.example.com]
+  vip[MetalLB_ingress_VIP]
+  ngx[nginx_ingress]
+  cm[cert-manager]
+  step[step-issuer]
+  ca[Step-CA]
+
+  user -->|1_DNS_A| dhcp
+  dhcp -->|2_forward_zone| bind
+  bind -->|3_VIP| user
+  user -->|4_HTTPS_SNI| vip
+  vip --> ngx
+  cm -->|mint_leaf| step
+  step --> ca
+  ca --> step
+  step -->|TLS_Secret| ngx
+```
+
+1. The laptop asks whatever DHCP gave it (router, Pi-hole). That resolver must **forward** `k8s.home.example.com` to BIND, or BIND must *be* the resolver.
+2. BIND returns the ingress VIP (`192.168.1.200` in the examples).
+3. The browser connects to that VIP with SNI `grafana.k8s.home.example.com`.
+4. nginx presents a leaf cert minted by Step-CA. The laptop must trust the **root**, not the leaf.
+
+Public names skip BIND and Step-CA: public DNS + Let's Encrypt HTTP-01 on port 80 of the same VIP (or a forwarded WAN IP).
+
 ## Why these choices
 
 | Choice | Why | Alternative |

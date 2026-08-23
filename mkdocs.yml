@@ -54,6 +54,8 @@ nav:
   - Inventory: inventory.md
   - Architecture: architecture.md
   - External dependencies: external-deps.md
+  - Local DNS and routing: dns.md
+  - Step-CA: step-ca.md
   - Talos on Unraid: talos-unraid.md
   - Talos on Proxmox: talos-proxmox.md
   - Bootstrap Argo CD: bootstrap.md
