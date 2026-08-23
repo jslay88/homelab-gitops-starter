@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Guide
+    url: https://jslay88.github.io/homelab-gitops-starter/
+    about: Read the Validation block on the page you were on first.
+  - name: Troubleshooting
+    url: https://jslay88.github.io/homelab-gitops-starter/troubleshooting/
+    about: Clone errors, MetalLB, ACME, SealedSecrets, Longhorn.

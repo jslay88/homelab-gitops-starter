@@ -26,6 +26,12 @@ Argo CD only watches `applications/`. Docs and CI are ignored.
 
 Delete an Application file under `applications/` to skip that component (NFS, Step-CA, csi-s3, etcd-backup, kube-prometheus-stack, and others are optional).
 
+## Help and contributing
+
+- [Get help](https://jslay88.github.io/homelab-gitops-starter/help/) — then [open an issue](https://github.com/jslay88/homelab-gitops-starter/issues/new?template=docs.yml)
+- [Contributing](CONTRIBUTING.md)
+- [SECURITY.md](SECURITY.md) before you attach anything to an issue
+
 ## License
 
-MIT. See [SECURITY.md](SECURITY.md) before opening issues.
+MIT.

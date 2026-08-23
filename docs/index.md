@@ -55,3 +55,5 @@ UIs that already run on the LAN (NAS, router, a Pi) use the same Ingress and the
 ## Out of scope
 
 Workloads. Identity products. Ad-blocking DNS as a *cluster* component (Pi-hole can sit in front of BIND later). A descheduler. Multi-instance Postgres HA. Cilium. Those are [left out on purpose](left-out.md).
+
+Docs wrong or a step that cannot work as written: [Get help](help.md) (open a GitHub issue). Changes to the public starter: [Contributing](contributing.md).

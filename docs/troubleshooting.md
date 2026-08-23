@@ -102,3 +102,5 @@ Full procedure: [Step-CA](step-ca.md).
 ## `kubectl top` empty
 
 - metrics-server not Ready; kubelet TLS skip flags are in `values/metrics-server/values.yaml`.
+
+Still stuck after a Validation check, and the **docs** look wrong: [Get help](help.md) — [open an issue](https://github.com/jslay88/homelab-gitops-starter/issues/new?template=docs.yml) on the public repo. Do not paste secrets.

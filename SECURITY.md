@@ -20,3 +20,5 @@ This repository is a public **starter**. Your working copy should be a **private
 A SealedSecret is bound to **one** cluster. Re-seal everything when you stand up a new cluster.
 
 If you accidentally pushed a secret, rotate it at the source and treat Git history as compromised.
+
+How to ask a question without leaking the above: [Get help](https://jslay88.github.io/homelab-gitops-starter/help/).

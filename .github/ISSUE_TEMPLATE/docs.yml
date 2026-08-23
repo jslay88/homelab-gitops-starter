@@ -1,0 +1,27 @@
+name: Docs or starter bug
+description: Something in the public guide or placeholder YAML is wrong.
+title: "[docs] "
+labels: []
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Read [Get help](https://jslay88.github.io/homelab-gitops-starter/help/) first.
+        **Do not** paste PATs, TSIG, SealedSecrets, kubeconfig, or `talosconfig`.
+  - type: textarea
+    id: what
+    attributes:
+      label: What is wrong
+      description: Page, wave, or file. What you expected vs what you got.
+    validations:
+      required: true
+  - type: input
+    id: pins
+    attributes:
+      label: Pins (if relevant)
+      description: Talos / chart versions from the versions page, if this is skew.
+  - type: textarea
+    id: notes
+    attributes:
+      label: Extra (sanitized)
+      description: kubectl or Argo status with secrets removed.

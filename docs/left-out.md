@@ -12,4 +12,4 @@
 | Custom Pages domain | `https://jslay88.github.io/homelab-gitops-starter/` is enough. |
 | Someone's live SealedSecrets, IPs, or ACME email | This repo must stay safe to fork. |
 
-If you want those later, add them in **your** template instance, not as a PR that re-homes a private lab into this guide.
+If you want those later, add them in **your** template instance, not as a PR that re-homes a private lab into this guide. What *is* welcome: [Contributing](contributing.md).
