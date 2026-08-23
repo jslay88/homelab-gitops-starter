@@ -89,11 +89,13 @@ Use S3 as S3. Skip `applications/csi-s3.yaml` until you have a concrete object t
 
 **Verify:** `kubectl -n longhorn get pods` and the Longhorn UI (port-forward or later Ingress).
 
-Backup target (MinIO) is optional. When you have S3 credentials, seal them and point Longhorn at the endpoint — not in this repo by default.
+Backup target (MinIO) is optional. Procedure: [wave 9](9-backups.md#longhorn--minio). NAS install: [MinIO and NFS](../unraid-extras.md).
 
 ## nfs-provisioner (optional)
 
 [nfs-subdir-external-provisioner](https://github.com/kubernetes-sigs/nfs-subdir-external-provisioner).
+
+Export on Unraid: [MinIO and NFS](../unraid-extras.md#nfs-export-rwx).
 
 **Must change:** `nfs.server` and `nfs.path` in `values/nfs-provisioner/values.yaml`.
 

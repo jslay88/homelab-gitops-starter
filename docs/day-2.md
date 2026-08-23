@@ -1,6 +1,6 @@
 # Day-2 apps
 
-Platform is waves 0–9 (+ observability). Your apps start at wave **10** or higher.
+Platform is waves 0–9 (+ observability). Your apps start at wave **10** or higher. Prove Ingress + Step-CA first: [first app](first-app.md).
 
 Do **not** put TeslaMate, Authentik, or media charts in this starter. Add a new Application in **your** template copy.
 
@@ -123,4 +123,64 @@ spec:
     storageClass: longhorn   # not nfs, not csi-s3 — see storage wave
 ```
 
-Seal the owner password. Do not enable HA (`instances: 2+`) until you have disk and a reason.
+Seal the owner password (`bootstrap.initdb.secret.name`). Do not enable HA (`instances: 2+`) until you have disk and a reason.
+
+App pods get a user/database from that Cluster (or a `Role` / extra `Database` CR in current CNPG). Point the app at `my-app-db-rw` in the same namespace. Do not put the Superuser password in the app Deployment.
+
+## CNPG backup to MinIO
+
+Wave 9 installs the [Barman Cloud plugin](https://cloudnative-pg.io/plugin-barman-cloud/docs/usage/). Per database, in the **app** namespace (third source or a manifests-only Application):
+
+```yaml
+apiVersion: barmancloud.cnpg.io/v1
+kind: ObjectStore
+metadata:
+  name: my-app-minio
+  namespace: my-app
+spec:
+  retentionPolicy: "7d"
+  configuration:
+    destinationPath: s3://cnpg-backups/my-app
+    endpointURL: http://10.0.0.2:9000
+    s3Credentials:
+      accessKeyId:
+        name: cnpg-barman-s3
+        key: ACCESS_KEY_ID
+      secretAccessKey:
+        name: cnpg-barman-s3
+        key: ACCESS_SECRET_KEY
+    wal:
+      compression: gzip
+    data:
+      compression: gzip
+```
+
+```yaml
+# on the Cluster
+spec:
+  instances: 1
+  plugins:
+    - name: barman-cloud.cloudnative-pg.io
+      isWALArchiver: true
+      parameters:
+        barmanObjectName: my-app-minio
+```
+
+```yaml
+apiVersion: postgresql.cnpg.io/v1
+kind: ScheduledBackup
+metadata:
+  name: my-app-db-daily
+  namespace: my-app
+spec:
+  immediate: true
+  schedule: "0 0 3 * * *"   # CNPG is six-field cron (seconds first)
+  backupOwnerReference: self
+  method: plugin
+  pluginConfiguration:
+    name: barman-cloud.cloudnative-pg.io
+  cluster:
+    name: my-app-db
+```
+
+Seal `cnpg-barman-s3` in `my-app`. Restore is a new Cluster with `bootstrap.recovery` pointing at that ObjectStore — follow current [plugin usage](https://cloudnative-pg.io/plugin-barman-cloud/docs/usage/), it moves between versions. Test recovery **once** on a dummy Cluster before the disk you care about dies.

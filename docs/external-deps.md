@@ -11,8 +11,8 @@ These sit **outside** the cluster. The starter documents them; it does not insta
 | Authoritative DNS | external-dns creates A/TXT in **one** zone | [BIND](dns.md) on Unraid `:53` + TSIG (RFC2136) | Cloudflare / Route53, or a wildcard A on the router. |
 | LAN resolver | Laptops and Talos nodes must *find* that zone | Router / Unbound / Pi-hole **forwards** `k8s.home.example.com` to BIND | Or make BIND the DHCP DNS (single point of failure). |
 | Block storage | Default PVC class | Extra vDisk on each worker, Longhorn | **Required** for the storage model this guide teaches. |
-| RWX | Shared filesystems | NFS export `/mnt/user/k8s` | **Skip** and use Longhorn only. |
-| Object storage | Longhorn backups, etcd snapshots, CNPG Barman | MinIO on Unraid | Any S3 API. **Skip** until you want backups. |
+| RWX | Shared filesystems | NFS export — [how](unraid-extras.md#nfs-export-rwx) | **Skip** and use Longhorn only. |
+| Object storage | Longhorn backups, etcd snapshots, CNPG Barman | MinIO — [how](unraid-extras.md#minio-s3-api) | Any S3 API. **Skip** until you want backups. |
 | Git | Source of truth | This repo (template) + PAT if private | Public repo can skip repo-creds. |
 | etcd snapshots | Cluster disaster recovery | `talosctl etcd snapshot` from a workstation | **Skip** in v1 if you accept rebuild-from-Git. Do **not** copy a kubeadm hostPath CronJob onto Talos. |
 

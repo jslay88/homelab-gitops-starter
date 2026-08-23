@@ -4,6 +4,6 @@
 
 The **sealing certificate is generated in-cluster**. It is unique to this cluster. You cannot reuse SealedSecrets from another lab.
 
-Next: [Secrets workflow](../secrets.md).
+Next: [Secrets workflow](../secrets.md) (catalog + **back up the sealing key**).
 
 **Verify:** `kubectl -n kube-system get deploy sealed-secrets-controller`

@@ -204,7 +204,7 @@ kubectl --kubeconfig ./kubeconfig get nodes
 
 The API VIP does **not** exist until etcd is up (Talos elects a holder via etcd). After nodes are Ready, `ping 10.0.0.20` and `curl -k https://10.0.0.20:6443/version` should work.
 
-Wait until four nodes are Ready (3 CP + 1 worker). Then go to [bootstrap](bootstrap.md).
+Wait until four nodes are Ready (3 CP + 1 worker). Then go to [bootstrap](bootstrap.md). Later: [Talos day-2](talos-day2.md) (upgrade, add a worker, etcd restore).
 
 ## Kubernetes API VIP
 

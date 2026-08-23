@@ -59,6 +59,8 @@ nav:
   - Step-CA: step-ca.md
   - Talos on Unraid: talos-unraid.md
   - Talos on Proxmox: talos-proxmox.md
+  - Talos day-2: talos-day2.md
+  - MinIO and NFS: unraid-extras.md
   - Bootstrap Argo CD: bootstrap.md
   - Application sources: argo-sources.md
   - Waves:
@@ -75,8 +77,10 @@ nav:
       - "9 — Backups": waves/9-backups.md
   - Secrets: secrets.md
   - Observability: observability.md
+  - First app: first-app.md
   - Day-2 apps: day-2.md
   - LAN apps behind Ingress: lan-backends.md
+  - Bumping charts: upgrades.md
   - Troubleshooting: troubleshooting.md
   - What we left out: left-out.md
   - Versions: versions.md

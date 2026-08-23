@@ -74,7 +74,7 @@ That Application watches `applications/` and creates one child per YAML file.
 kubectl -n argocd get applications
 ```
 
-Waves 0–2 should go Healthy first. Ingress (wave 3) needs MetalLB. Certificates need cert-manager CRDs.
+Waves 0–2 should go Healthy first. Ingress (wave 3) needs MetalLB. Certificates need cert-manager CRDs. When 0–4 are Healthy and DNS works, prove the path with a [first app](first-app.md).
 
 ## 5. Private Git
 

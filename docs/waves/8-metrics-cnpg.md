@@ -8,7 +8,7 @@
 
 ## cloudnative-pg
 
-[CloudNativePG](https://cloudnative-pg.io/documentation/current/) operator only. No database Clusters. Add those in [day-2](../day-2.md) apps.
+[CloudNativePG](https://cloudnative-pg.io/documentation/current/) operator only. No database Clusters. Add those in [day-2](../day-2.md) apps (including [Barman ObjectStore](../day-2.md#cnpg-backup-to-minio) after wave 9).
 
 `ServerSideApply=true` for large CRDs.
 

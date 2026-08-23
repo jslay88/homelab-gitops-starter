@@ -2,7 +2,7 @@
 
 | Topic | Why it is not in v1 |
 |-------|---------------------|
-| TeslaMate, Authentik, Immich, game servers | Workloads. Add them as wave 10+ in your copy. |
+| TeslaMate, Authentik, Immich, game servers | Workloads. Add them as wave 10+ in your copy. Argo/Grafana SSO (Dex, Authentik) too. |
 | Pi-hole | LAN DNS choice, not a cluster dependency. Point Talos at the router. |
 | In-cluster Step-CA | Extra failure domain. Run CA on the NAS or skip. |
 | Descheduler | Optional insurance after drains. Not needed to get a lab online. |

@@ -1,6 +1,6 @@
 # Versions
 
-Pins as of **August 2026**. Bump deliberately; do not float `latest`. When you bump, bump the Application `targetRevision` and this table together.
+Pins as of **August 2026**. Bump deliberately; do not float `latest`. When you bump, bump the Application `targetRevision` and this table together. Procedure: [chart upgrades](upgrades.md). Talos/Kubernetes: [Talos day-2](talos-day2.md).
 
 These match a long-lived homelab GitOps repo from the same period so the starter and that lab do not drift for no reason.
 

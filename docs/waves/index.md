@@ -20,4 +20,4 @@ Each file in `applications/` is one Argo CD Application with `argocd.argoproj.io
 
 Values that **must** change before a healthy sync are listed on each wave page.
 
-Upstream manuals (MetalLB, cert-manager, Longhorn, F5 nginx, …) are linked from [versions](../versions.md).
+Upstream manuals (MetalLB, cert-manager, Longhorn, F5 nginx, …) are linked from [versions](../versions.md). After the waves: [first app](../first-app.md), [Talos day-2](../talos-day2.md), [chart bumps](../upgrades.md).

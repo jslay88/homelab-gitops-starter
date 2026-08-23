@@ -76,8 +76,20 @@ Full procedure: [Step-CA](step-ca.md).
 
 ## SealedSecret stays Error
 
-- Sealed with another cluster’s cert.
+- Sealed with another cluster’s cert. Restore the [sealing-key backup](secrets.md#back-up-the-sealing-key) or re-seal everything.
 - Wrong namespace in the SealedSecret vs the target Secret.
+
+## Longhorn backup target Unavailable
+
+- Secret `longhorn-backup-s3` missing keys `AWS_ENDPOINTS` / access key, or wrong namespace (`longhorn`).
+- `defaultBackupStore.backupTarget` not `s3://bucket@region/` form. [Wave 9](waves/9-backups.md#longhorn--minio).
+- Workers cannot reach MinIO (Unraid firewall). [Unraid extras](unraid-extras.md).
+
+## CNPG backup / plugin not archiving
+
+- Wave 9 plugin Application not Healthy.
+- `ObjectStore` `barmanObjectName` ≠ Cluster `plugins.parameters.barmanObjectName`.
+- Secret keys must be `ACCESS_KEY_ID` / `ACCESS_SECRET_KEY` as in [day-2](day-2.md#cnpg-backup-to-minio).
 
 ## `kubectl top` empty
 
