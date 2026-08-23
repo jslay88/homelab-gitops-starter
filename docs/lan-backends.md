@@ -241,6 +241,6 @@ If the app issues redirects to `http://10.0.0.2:8080` or its own LAN hostname, t
 
 ## What this is not
 
-TCP/UDP game servers, MQTT, and other non-HTTP listeners do not go through this Ingress. Give them a MetalLB IP from the **apps** pool, as on the [DNS](dns.md#non-http-loadbalancer-not-ingress) page.
+TCP/UDP listeners that are not HTTP do not go through this Ingress. Give them a MetalLB IP from the **apps** pool, as on the [DNS](dns.md#non-http-loadbalancer-not-ingress) page.
 
 Do not publish `6443` this way. The Kubernetes API already has a [VIP](talos-unraid.md#kubernetes-api-vip).

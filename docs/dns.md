@@ -225,18 +225,18 @@ HTTP UIs that live on the NAS or the router still use this Ingress VIP. That is 
 
 ## Non-HTTP (LoadBalancer, not Ingress)
 
-Game servers and MQTT do not go through nginx. MetalLB assigns an IP from the **apps** pool. Create DNS yourself or annotate the Service:
+A TCP or UDP Service that is not HTTP does not go through nginx. MetalLB assigns an IP from the **apps** pool. Create DNS yourself or annotate the Service:
 
 ```yaml
 metadata:
   annotations:
-    external-dns.alpha.kubernetes.io/hostname: game.k8s.home.example.com
+    external-dns.alpha.kubernetes.io/hostname: mqtt.k8s.home.example.com
 spec:
   type: LoadBalancer
   allocateLoadBalancerNodePorts: false
 ```
 
-That A record will **not** be the ingress VIP. Do not reuse the `*.` wildcard for those names, or clients will hit nginx on 443 instead of the game port.
+That A record will **not** be the ingress VIP. Do not reuse the `*.` wildcard for those names, or clients will hit nginx on 443 instead of the real port.
 
 ## Skip / substitute
 

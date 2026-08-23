@@ -2,7 +2,7 @@
 
 Platform is waves 0–9 (+ observability). Your apps start at wave **10** or higher. Prove Ingress + Step-CA first: [first app](first-app.md).
 
-Do **not** put TeslaMate, Authentik, or media charts in this starter. Add a new Application in **your** template copy.
+Do **not** add workload charts to this starter repo. Add a new Application in **your** template copy.
 
 ## Pattern
 

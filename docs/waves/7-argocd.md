@@ -39,7 +39,7 @@ server:
 
 Admin password is still the initial Secret until you rotate it (Argo UI or `argocd account update-password`). Do not commit it.
 
-SSO / Dex / Authentik is [left out](../left-out.md). Add it in your copy when you have an IdP.
+SSO is [left out](../left-out.md). Add it in your copy when you have an IdP.
 
 ## Do not helm uninstall
 

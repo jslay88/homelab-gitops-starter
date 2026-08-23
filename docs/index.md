@@ -10,7 +10,7 @@ You get a Kubernetes cluster whose day-2 life is Git: Argo CD watches this repos
 
 Someone standing up a homelab cluster (Talos on Unraid VMs is the path we write first; Proxmox works) who wants the same *kind* of platform that a long-lived GitOps lab uses: MetalLB, ingress, cert-manager, Longhorn, sealed-secrets, optional Postgres operator and backups.
 
-It is not a dump of someone else's live `cluster-configs`. There are no real IPs, no SealedSecrets, no TeslaMate / Authentik / Immich / game-server charts.
+It is not a dump of someone else's live lab. There are no real IPs, no SealedSecrets, and no workload charts.
 
 ## How to use it
 
