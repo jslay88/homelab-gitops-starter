@@ -15,7 +15,7 @@ It is not a dump of someone else's live lab. There are no real IPs, no SealedSec
 ## How to use it
 
 1. Fill in the [inventory](inventory.md) on paper or in a notes file.
-2. **Use this template** → new repo, **private**. Do not fork: a fork of a public repo stays public and stays linked. Replace `YOUR_GITHUB`, `CHANGEME`, and `example.com` in `master-application.yaml` and `applications/`. Private Git means Argo needs a PAT ([secrets](secrets.md), wave 2).
+2. **Use this template** → new repo, **private**. Do not fork: a fork of a public repo stays public and stays linked. Replace `YOUR_GITHUB`, `CHANGEME`, and `example.com` in `master-application.yaml` and `applications/`. Private Git: create the Argo `repo-creds` Secret **before** the App of Apps ([bootstrap](bootstrap.md#4-create-git-credentials-before-the-app-of-apps)). Wave 2 only seals that Secret into Git later.
 3. Read [local DNS](dns.md) and [Step-CA](step-ca.md) **before** you pick hostnames. The cluster cannot invent a LAN nameserver or a private CA.
 4. Pick [addresses](addressing.md) (reserved CP / worker / VIP blocks; cluster name `homelab`). **Three control planes** plus a Talos **API VIP** at `.20` so `kubectl` has one IP that survives a CP reboot. Build [Talos](talos-unraid.md) under `~/talos/homelab`, then [bootstrap Argo CD](bootstrap.md).
 5. Walk [waves 0–9](waves/index.md). Delete Application files you do not want. Upstream docs for every pin: [versions](versions.md).

@@ -2,6 +2,8 @@
 
 Manual steps happen **once**. After that, Git is the control plane.
 
+**Private repo (recommended):** Argo must already have a `repo-creds` Secret **before** you apply `master-application.yaml`. That file tells Argo to clone your repo. Wave 2 cannot help — those manifests are *in* the repo. Order: Helm install → kubectl Secret → App of Apps. Details in [step 4](#4-create-git-credentials-before-the-app-of-apps).
+
 ## 0. DNS and CA are not optional surprises
 
 If you want `https://something.k8s.home.example.com` from a laptop, finish [local DNS](dns.md) (zone + forward + `dig`) and have [Step-CA](step-ca.md) listening **before** you care about wave 4/6. You can bootstrap Argo without them; Ingresses will just not be useful.
@@ -62,9 +64,11 @@ In **your** private template copy of this repo:
 
 Commit and push to `main`.
 
-## 4. Repo credentials first (private Git)
+## 4. Create Git credentials — before the App of Apps
 
-`master-application.yaml` tells Argo to clone **your** repo and apply `applications/`. That repo is private. Argo has no credentials yet. Wave 2 (`argocd-repo-creds`) cannot save you: that Application YAML *is inside the private repo*. Sealed Secrets is not installed yet either. You create the Secret **on the cluster** with kubectl, then apply the App of Apps.
+Do this **now**. Do **not** skip to step 5.
+
+`master-application.yaml` tells Argo to clone **your** private repo and apply `applications/`. Argo has no GitHub credentials yet. Wave 2 (`argocd-repo-creds`) cannot save you: that Application YAML *is inside the private repo*. Sealed Secrets is not installed yet either. Create the Secret **on the cluster** with kubectl, then apply the App of Apps.
 
 1. GitHub → Settings → Developer settings → Personal access tokens. Classic: scope `repo`. Fine-grained: **Contents: Read** on this one repository. Do not commit the token.
 2. The `url` is a **prefix**. `https://github.com/YOUR_GITHUB` covers every repo under that user/org. Narrower is fine (`https://github.com/YOUR_GITHUB/homelab-gitops.git`).
@@ -95,11 +99,15 @@ If you ignored the private-repo advice and the copy is public, skip this section
 
 ## 5. Apply the App of Apps
 
+!!! warning "Private repo"
+    If `kubectl -n argocd get secret repo-creds-github` fails, **stop**. Go back to [step 4](#4-create-git-credentials-before-the-app-of-apps). Applying now will sit on `authentication required` until that Secret exists.
+
 ```bash
+kubectl -n argocd get secret repo-creds-github   # must exist
 kubectl apply -f master-application.yaml
 ```
 
-That Application watches `applications/` and creates one child per YAML file. With the Secret from step 4, the first clone succeeds.
+That Application watches `applications/` and creates one child per YAML file. The Secret from step 4 is what lets the first clone succeed.
 
 ```bash
 kubectl -n argocd get applications
