@@ -78,7 +78,7 @@ flowchart TD
 ```
 
 1. The laptop asks whatever DHCP gave it (router, Pi-hole). That resolver must **forward** `k8s.home.example.com` to BIND, or BIND must *be* the resolver.
-2. BIND returns the ingress VIP (`10.0.0.30` in the examples — a reserved VIP, not a node IP). See [addressing](addressing.md).
+2. BIND returns the ingress VIP (`10.0.0.20` in the examples — a reserved VIP, not a node IP). See [addressing](addressing.md).
 3. The browser connects to that VIP with SNI `grafana.k8s.home.example.com`.
 4. nginx presents a leaf cert minted by Step-CA. The laptop must trust the **root**, not the leaf.
 

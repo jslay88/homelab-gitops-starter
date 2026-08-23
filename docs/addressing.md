@@ -11,14 +11,14 @@ This guide’s examples use `10.0.0.0/24` and the cluster name `homelab` (Talos 
 | Infra | `.1` | Gateway / LAN resolver (router, Unbound, Pi-hole) |
 | Infra | `.2` | Unraid (BIND, Step-CA, NFS, MinIO) |
 | Control plane | `.11`–`.19` | Talos CP nodes. Start at `.11`. Room for three (or more) without touching workers. |
+| Pinned VIP | `.20` | Ingress LoadBalancer (MetalLB pool `ingress`). Seam between CP and workers. |
 | Workers | `.21`–`.29` | Talos workers. Start at `.21`. |
-| Pinned VIP | `.30` | Ingress LoadBalancer (MetalLB pool `ingress`) |
-| Pinned VIPs | `.31`–`.39` | Other stable LBs you do not want recycled (optional) |
+| Other pinned VIPs | `.31`–`.39` | Stable LBs you do not want recycled (optional) |
 | Dynamic LBs | `.50`–`.99` | MetalLB pool `apps` |
 
-Day-one cluster in the examples: **one** control plane at `10.0.0.11`, **one** worker at `10.0.0.21`, ingress at `10.0.0.30`. The empty addresses in `.12`–`.19` and `.22`–`.29` are intentional.
+Day-one cluster in the examples: **one** control plane at `10.0.0.11`, **one** worker at `10.0.0.21`, ingress at `10.0.0.20`. The empty addresses in `.12`–`.19` and `.22`–`.29` are intentional.
 
-Do **not** put the ingress VIP inside the control-plane block. A VIP is not a node. DHCP must not hand out any of these ranges.
+Do **not** put the ingress VIP inside the control-plane or worker blocks. A VIP is not a node. DHCP must not hand out any of these ranges.
 
 ```text
 10.0.0.1      router
@@ -26,9 +26,9 @@ Do **not** put the ingress VIP inside the control-plane block. A VIP is not a no
 10.0.0.11     talos-cp-01      ← first (maybe only) control plane
 10.0.0.12     (reserved)       ← talos-cp-02 if you grow
 10.0.0.13     (reserved)       ← talos-cp-03
+10.0.0.20     ingress VIP
 10.0.0.21     talos-worker-01
 10.0.0.22     (reserved)
-10.0.0.30     ingress VIP
 10.0.0.50-99  MetalLB apps
 ```
 
@@ -61,7 +61,7 @@ Adding a worker is: new VM, same Image Factory disk, `worker.yaml` with a **new*
 
 MetalLB announces **extra** IPs on the same L2. They must not collide with nodes, DHCP, or Unraid.
 
-- Pool `ingress`: a `/32` (`10.0.0.30/32`) so the ingress Service is pinned.
+- Pool `ingress`: a `/32` (`10.0.0.20/32`) so the ingress Service is pinned.
 - Pool `apps`: a range (`10.0.0.50-10.0.0.99`) for everything else.
 
 Reserve the node blocks in the router DHCP server (or static-only those leases).

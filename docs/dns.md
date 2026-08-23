@@ -6,7 +6,7 @@ Wave 6 only installs [external-dns](https://kubernetes-sigs.github.io/external-d
 
 ## What “local routing” means here
 
-A browser on the LAN does **not** talk to a Kubernetes Service name (`grafana.monitoring.svc`). It talks to a **DNS name you chose**, which must resolve to a **LAN IP** that MetalLB gave the ingress controller (or another LoadBalancer). In the examples that VIP is `10.0.0.30` — reserved in [addressing](addressing.md), not a control-plane or worker address.
+A browser on the LAN does **not** talk to a Kubernetes Service name (`grafana.monitoring.svc`). It talks to a **DNS name you chose**, which must resolve to a **LAN IP** that MetalLB gave the ingress controller (or another LoadBalancer). In the examples that VIP is `10.0.0.20` — reserved in [addressing](addressing.md), not a control-plane or worker address.
 
 ```mermaid
 sequenceDiagram
@@ -19,7 +19,7 @@ sequenceDiagram
 
   Laptop->>Resolver: A grafana.k8s.home.example.com
   Resolver->>Auth: recurse or forward that zone
-  Auth-->>Laptop: 10.0.0.30
+  Auth-->>Laptop: 10.0.0.20
   Laptop->>VIP: HTTPS SNI grafana.k8s.home.example.com
   VIP->>Nginx: same
   Nginx->>Pod: HTTP to Service
@@ -143,7 +143,7 @@ $TTL 60
     IN NS  ns.home.example.com.
 
 ; optional static pin so ingress works before the first external-dns run
-*.k8s.home.example.com.  IN A  10.0.0.30
+*.k8s.home.example.com.  IN A  10.0.0.20
 ```
 
 TTL 60 keeps a bad record from sticking. The SOA serial is ignored for dynamic updates; BIND rewrites the file.
@@ -152,11 +152,11 @@ TTL 60 keeps a bad record from sticking. The SOA serial is ignored for dynamic u
 
 ### 4. What external-dns actually writes
 
-For Ingress host `grafana.k8s.home.example.com` whose Service is a LoadBalancer at `10.0.0.30`:
+For Ingress host `grafana.k8s.home.example.com` whose Service is a LoadBalancer at `10.0.0.20`:
 
 | Record | Purpose |
 |--------|---------|
-| `grafana.k8s.home.example.com A 10.0.0.30` | The lookup clients use |
+| `grafana.k8s.home.example.com A 10.0.0.20` | The lookup clients use |
 | `external-dns-grafana.k8s.home.example.com TXT "heritage=external-dns,external-dns/owner=k8s,…"` | Ownership so two clusters do not fight |
 
 `--txt-prefix=external-dns-` and `--txt-owner-id=homelab` in this repo must stay unique if you ever run a second cluster against the same zone.
@@ -189,7 +189,7 @@ dig grafana.k8s.home.example.com @10.0.0.2 +norecurse
 
 # After external-dns (or the wildcard) exists:
 dig +short grafana.k8s.home.example.com
-# expect the ingress VIP, e.g. 10.0.0.30
+# expect the ingress VIP, e.g. 10.0.0.20
 ```
 
 If `@10.0.0.2` works and `@10.0.0.1` does not, the override is wrong. If both fail, the zone or record is wrong.
