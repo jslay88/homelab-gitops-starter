@@ -92,7 +92,7 @@ Public names skip BIND and Step-CA: public DNS + Let's Encrypt HTTP-01 on port 8
 | F5 nginx-ingress chart | The kubernetes/ingress-nginx project is not the path we want to start people on | Traefik, Cilium Gateway |
 | SealedSecrets | Secrets stay in Git, bound to one cluster | SOPS + age, External Secrets |
 | Talos API VIP + MetalLB L2 | One kubeconfig IP; app LBs without BGP | kube-vip for everything, Cilium L2 |
-| Longhorn | Block RWO on node disks; works on Talos with extensions | local-path (no replica), rook-ceph (heavier) |
+| Longhorn default, NFS for RWX, S3 for backups | Block IO on workers; NAS share when many pods need one tree; object API for archives. See [storage](waves/5-storage.md) | local-path (no replica), rook-ceph (heavier), csi-s3 as a fake disk |
 | Flannel (Talos default) | Ships with Talos; **does not enforce NetworkPolicy** | Cilium if you want policy |
 
 ## Pod Security

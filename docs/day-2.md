@@ -118,7 +118,7 @@ spec:
   instances: 1
   storage:
     size: 8Gi
-    storageClass: longhorn
+    storageClass: longhorn   # not nfs, not csi-s3 — see storage wave
 ```
 
 Seal the owner password. Do not enable HA (`instances: 2+`) until you have disk and a reason.

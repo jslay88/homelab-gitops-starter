@@ -29,10 +29,10 @@ These sit **outside** the cluster. The starter documents them; it does not insta
 - BIND + TSIG → one zone, one SealedSecret, plus a **forward** from the LAN resolver.
 - Cloudflare only → no internal zone; skip BIND and usually skip Step-CA.
 
-**Storage extras**
+**Storage extras** — IO vs copies vs protocol: [wave 5](waves/5-storage.md).
 
 - One worker, no NAS share → Longhorn `defaultReplicaCount: 1`, delete nfs-provisioner and csi-s3.
-- Three workers + Unraid → Longhorn 3, keep NFS if you want RWX media, keep MinIO for backups.
+- Three workers + Unraid → Longhorn 3 for disks/DBs, NFS for RWX media, MinIO as an **S3 API** for backups (not a csi-s3 PVC for Postgres).
 
 ## What this guide will not configure for you
 
