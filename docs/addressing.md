@@ -4,7 +4,7 @@ Reserve **blocks**, not the next free DHCP lease. You will add workers and pinne
 
 **Use three control-plane nodes.** That is the recommended topology in this guide, not a later luxury. One CP means any reboot, disk check, or Unraid VM migrate takes the API and etcd with it — you cannot `kubectl` or Argo-sync your way through maintenance. Three CPs give etcd quorum: you can shut one down and the cluster stays up. Two is worse than one (either member dying loses quorum). Skip two.
 
-Give `kubectl` **one** address that is not a node: a Talos **API VIP** at `.20`. That is not MetalLB and not ingress. Setup is in [Talos on Unraid](talos-unraid.md#kubernetes-api-vip).
+Give `kubectl` **one** address that is not a node: a Talos **API VIP** at `.20`. That is not MetalLB and not ingress. Setup is in [Talos on Unraid](talos-unraid.md#kubernetes-api-vip) (same VIP on [Proxmox](talos-proxmox.md)).
 
 This guide’s examples use `10.0.0.0/24` and the cluster name `homelab` (Talos files under `~/talos/homelab`). Use your own prefix; keep the **grouping**.
 

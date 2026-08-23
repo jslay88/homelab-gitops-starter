@@ -66,7 +66,7 @@ talosctl upgrade-k8s --to 1.35.x
 
 ## Add a worker
 
-1. New Unraid VM, same ISO / schematic as the others. Name `talos-worker-02`. Address from the worker block (`10.0.0.22`).
+1. New VM (Unraid or [Proxmox](talos-proxmox.md)), same ISO / schematic as the others. Name `talos-worker-02`. Address from the worker block (`10.0.0.22`).
 2. `patches/worker-02.yaml` — copy `worker-01`, change the address only. **No** `vip`.
 3. Patch and apply:
 
@@ -111,4 +111,4 @@ Workers still have their disks. Longhorn data is not in etcd. etcd is API object
 
 Same schematic, same machine config (or regenerate from `secrets.yaml` + the same patches). Same IP if you can; otherwise update DHCP, `talosctl config endpoint`, and any EndpointSlices that pointed at a node IP (you should not have those — EndpointSlices point at LAN apps, not nodes).
 
-Unraid host dying takes every guest. Three CPs do not survive that. Off-host copies of `secrets.yaml`, the sealing-key backup, etcd snapshots, and MinIO matter; see [secrets](secrets.md) and [backups](waves/9-backups.md).
+The hypervisor dying takes every guest. Three CPs do not survive that. Off-host copies of `secrets.yaml`, the sealing-key backup, etcd snapshots, and MinIO matter; see [secrets](secrets.md) and [backups](waves/9-backups.md).

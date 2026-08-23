@@ -8,7 +8,7 @@ You get a Kubernetes cluster whose day-2 life is Git: Argo CD watches this repos
 
 ## Who this is for
 
-Someone standing up a homelab cluster (Talos on Unraid VMs is the path we write first; Proxmox works) who wants the same *kind* of platform that a long-lived GitOps lab uses: MetalLB, ingress, cert-manager, Longhorn, sealed-secrets, optional Postgres operator and backups.
+Someone standing up a homelab cluster (Talos VMs on Unraid or Proxmox) who wants the same *kind* of platform that a long-lived GitOps lab uses: MetalLB, ingress, cert-manager, Longhorn, sealed-secrets, optional Postgres operator and backups.
 
 It is not a dump of someone else's live lab. There are no real IPs, no SealedSecrets, and no workload charts.
 
@@ -17,7 +17,7 @@ It is not a dump of someone else's live lab. There are no real IPs, no SealedSec
 1. Fill in the [inventory](inventory.md) on paper or in a notes file.
 2. **Use this template** → new repo, **private**. Do not fork: a fork of a public repo stays public and stays linked. Replace `YOUR_GITHUB`, `CHANGEME`, and `example.com` in `master-application.yaml` and `applications/`. Private Git: create the Argo `repo-creds` Secret **before** the App of Apps ([bootstrap](bootstrap.md#4-create-git-credentials-before-the-app-of-apps)). Wave 2 only seals that Secret into Git later.
 3. Read [local DNS](dns.md) and [Step-CA](step-ca.md) **before** you pick hostnames. The cluster cannot invent a LAN nameserver or a private CA.
-4. Pick [addresses](addressing.md) (reserved CP / worker / VIP blocks; cluster name `homelab`). **Three control planes** plus a Talos **API VIP** at `.20` so `kubectl` has one IP that survives a CP reboot. Build [Talos](talos-unraid.md) under `~/talos/homelab`, then [bootstrap Argo CD](bootstrap.md).
+4. Pick [addresses](addressing.md) (reserved CP / worker / VIP blocks; cluster name `homelab`). **Three control planes** plus a Talos **API VIP** at `.20` so `kubectl` has one IP that survives a CP reboot. Build Talos under `~/talos/homelab` on [Unraid](talos-unraid.md) or [Proxmox](talos-proxmox.md), then [bootstrap Argo CD](bootstrap.md).
 5. Walk [waves 0–9](waves/index.md). Delete Application files you do not want. Stop at each **Validation** block — the next wave will not paper over a failed check. Upstream docs for every pin: [versions](versions.md).
 6. [First app](first-app.md): one whoami Ingress + Step-CA cert so you know DNS and TLS work.
 7. [Talos day-2](talos-day2.md) when you upgrade or add a node. [Backups](waves/9-backups.md) when MinIO exists. [Chart bumps](upgrades.md) when you change a pin.

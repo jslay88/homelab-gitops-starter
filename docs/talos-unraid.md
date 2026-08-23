@@ -58,7 +58,7 @@ Do not run the Unraid “install a distro” path. Power on, note the maintenanc
     If that times out, the NIC is on the wrong bridge or the VM is not in maintenance. Do not `gen config` until you can talk to port 50000.
 
 !!! note "Unraid vs Proxmox"
-    The machine config is identical. Only the hypervisor UI changes. [Talos on Proxmox](talos-proxmox.md) is the same patches with a different host.
+    The machine config is identical. Only the hypervisor UI changes. [Talos on Proxmox](talos-proxmox.md) is the Create VM / ISO / bridge path; it reuses these patches.
 
 ## Phase 2 — Image Factory (Longhorn extensions)
 
