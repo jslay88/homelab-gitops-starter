@@ -13,7 +13,7 @@ These sit **outside** the cluster. The starter documents them; it does not insta
 | Block storage | Default PVC class | Extra vDisk on each worker, Longhorn | **Required** for the storage model this guide teaches. |
 | RWX | Shared filesystems | NFS export — [how](unraid-extras.md#nfs-export-rwx) | **Skip** and use Longhorn only. |
 | Object storage | Longhorn backups, etcd snapshots, CNPG Barman | MinIO — [how](unraid-extras.md#minio-s3-api) | Any S3 API. **Skip** until you want backups. |
-| Git | Source of truth | This repo (template) + PAT if private | Public repo can skip repo-creds. |
+| Git | Source of truth | **Private** template copy of this repo + PAT | Public copy can skip repo-creds. **Do not.** |
 | etcd snapshots | Cluster disaster recovery | `talosctl etcd snapshot` from a workstation | **Skip** in v1 if you accept rebuild-from-Git. Do **not** copy a kubeadm hostPath CronJob onto Talos. |
 
 ## Decision trees

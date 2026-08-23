@@ -19,7 +19,7 @@ Argo CD only watches `applications/`. Docs and CI are ignored.
 
 ## Quick start
 
-1. Use this repository as a **GitHub template** (not a long-lived fork).
+1. **Use this template** (not a fork) and create the new repo as **private**. A public copy will hold your LAN map, SealedSecrets, and ACME email. Argo will need a PAT — see the [guide](https://jslay88.github.io/homelab-gitops-starter/).
 2. Replace `YOUR_GITHUB` / `CHANGEME` / `example.com` using the [inventory](https://jslay88.github.io/homelab-gitops-starter/inventory/).
 3. Stand up Talos (Unraid VMs are documented; Proxmox works too).
 4. `helm install` Argo CD once, apply `master-application.yaml`, then Git owns the cluster.

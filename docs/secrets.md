@@ -1,5 +1,7 @@
 # Secrets
 
+Keep the GitOps repo **private** (Use this template → Private). You will still commit SealedSecrets and LAN YAML; the public internet does not need that map. Argo pulls with a PAT — that is the first row in the catalog below.
+
 Never commit a Kubernetes `Secret` with real data. Never commit `talosconfig`, `secrets.yaml` from `talosctl gen secrets`, or kubeconfig.
 
 ## kubeseal workflow
@@ -69,7 +71,7 @@ Seal each of these **after** wave 1. Namespace must match. Key names must match 
 
 | Secret | Namespace | Keys | Used by |
 |--------|-----------|------|---------|
-| `repo-creds-github` (name yours) | `argocd` | `type`, `url`, `username`, `password` + label `argocd.argoproj.io/secret-type=repo-creds` | Private Git. Skip if public. |
+| `repo-creds-github` (name yours) | `argocd` | `type`, `url`, `username`, `password` + label `argocd.argoproj.io/secret-type=repo-creds` | Argo pull of a **private** repo (recommended). |
 | `step-issuer-provisioner-password` | `step-issuer` | `password` | `StepClusterIssuer` `provisioner.passwordRef` |
 | `tsig` | `external-dns` | `secret` (the TSIG secret bytes, not the key name) | external-dns `TSIG_SECRET` |
 | `longhorn-backup-s3` | `longhorn` | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINTS` (`http://10.0.0.2:9000`), optionally `AWS_REGION` | Longhorn `defaultBackupStore` |

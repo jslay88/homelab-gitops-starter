@@ -1,6 +1,6 @@
 # Security
 
-This repository is a public starter. It must never contain live credentials.
+This repository is a public **starter**. Your working copy should be a **private** GitHub template (not a public fork). Even then, never commit live unsealed credentials.
 
 ## Do not file issues or PRs with
 

@@ -55,7 +55,7 @@ kubectl -n argocd port-forward svc/argocd-server 8080:443
 
 ## 3. Replace placeholders in Git
 
-In **your** template copy of this repo:
+In **your** private template copy of this repo:
 
 - `YOUR_GITHUB` → your GitHub user/org (every `repoURL` that points at this repo)
 - Inventory values in `values/` (MetalLB pools, ACME email, NFS, Step-CA, DNS)
@@ -76,9 +76,11 @@ kubectl -n argocd get applications
 
 Waves 0–2 should go Healthy first. Ingress (wave 3) needs MetalLB. Certificates need cert-manager CRDs. When 0–4 are Healthy and DNS works, prove the path with a [first app](first-app.md).
 
-## 5. Private Git
+## 5. Git credentials (private repo)
 
-If the repo is private, seal a PAT and add it under `values/argocd-repo-creds/` **before** wave 2 can pull. Public repos can delete `applications/argocd-repo-creds.yaml`.
+**Keep the GitOps repo private.** You will commit LAN IPs, SealedSecrets, and issuer YAML. A public fork is a map of the lab.
+
+Seal a PAT (or GitHub App) with `repo` read and add it under `values/argocd-repo-creds/` **before** wave 2 can pull. See [secrets](secrets.md). If you ignored the advice and left the copy public, you can delete `applications/argocd-repo-creds.yaml` — that is not the path this guide recommends.
 
 ## 6. Self-manage
 

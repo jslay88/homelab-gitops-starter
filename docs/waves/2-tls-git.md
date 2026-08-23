@@ -8,6 +8,6 @@
 
 ## argocd-repo-creds
 
-Template only. The kustomization starts **empty**. If the GitOps repo is private, seal a PAT (see [secrets](../secrets.md)) and add the SealedSecret to `values/argocd-repo-creds/kustomization.yaml`.
+Required if you followed the recommendation and made the GitOps repo **private**. The kustomization starts **empty**. Seal a PAT (see [secrets](../secrets.md)) and add the SealedSecret to `values/argocd-repo-creds/kustomization.yaml` before this wave can pull.
 
-If the repo is public, delete `applications/argocd-repo-creds.yaml`.
+Only delete `applications/argocd-repo-creds.yaml` if the copy is public (not recommended).

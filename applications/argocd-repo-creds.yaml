@@ -1,4 +1,4 @@
-# Optional if this GitOps repo is public. Delete this file to skip.
+# Required for a private GitOps repo (recommended). Delete only if the copy is public.
 # After sealing a PAT, add the SealedSecret to values/argocd-repo-creds/kustomization.yaml.
 apiVersion: argoproj.io/v1alpha1
 kind: Application
