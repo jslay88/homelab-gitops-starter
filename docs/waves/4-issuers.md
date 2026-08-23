@@ -12,7 +12,7 @@ ClusterIssuer using ACME HTTP-01 and ingress class `nginx`.
 
 Use the [staging ACME directory](https://letsencrypt.org/docs/staging-environment/) until a test Ingress on a **public** hostname succeeds, then switch `server` to production. Staging certs are not trusted by browsers; that is expected.
 
-HTTP-01 means: Let's Encrypt connects to `http://<name>/.well-known/acme-challenge/...` and that must hit **this** ingress VIP on port 80. The name must already resolve in **public** DNS. A LAN-only name will sit in `Pending` forever.
+HTTP-01 means: Let's Encrypt connects to `http://<name>/.well-known/acme-challenge/...` and that must hit **this** ingress VIP on port 80. On a typical homelab that is a WAN port-forward (or 1:1 NAT) of **80 → `10.0.0.30`**, not a node and not the API VIP. The name must already resolve in **public** DNS. A LAN-only name will sit in `Pending` forever.
 
 **Skip** if you will not publish names. Delete `applications/letsencrypt.yaml`.
 

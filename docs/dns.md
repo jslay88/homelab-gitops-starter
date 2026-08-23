@@ -203,7 +203,9 @@ Talos nodes need the same path: `machine.network.nameservers` should be the **LA
 | Laptop on LAN | `grafana.k8s.home.example.com` | Router → BIND | Ingress VIP | Step-CA |
 | Laptop on LAN | `app.k8s.example.com` | Public DNS (or split) | Ingress VIP **or** public IP | Let's Encrypt |
 | Phone on LTE | `grafana.k8s.home.example.com` | ISP | NXDOMAIN (good) | — |
-| Internet | `app.k8s.example.com` | Public DNS | WAN IP / port-forward | Let's Encrypt |
+| Internet | `app.k8s.example.com` | Public DNS | WAN IP → **ingress VIP** | Let's Encrypt |
+
+WAN port-forwards (or 1:1 NAT) for **80 and 443** go to the **ingress VIP** (`10.0.0.30` in the examples), not a node and not the Kubernetes API VIP (`.20`). Public DNS for those names should be the WAN address (or the VIP if you publish a LAN IP, which you usually should not). Let's Encrypt HTTP-01 is the same path: the validator hits port 80 on the WAN, which must land on nginx.
 
 If you publish `app.k8s.example.com` to the world, hairpin / NAT reflection on the router decides whether a LAN client hitting the **public** name still lands on the VIP. Many people keep UIs on `*.k8s.home.example.com` only so they never depend on that.
 

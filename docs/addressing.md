@@ -71,7 +71,10 @@ Growing 1 → 3 later works (`talosctl` join extra CP machines) but you will do 
 | Who announces it | **Talos** (L2, etcd election among CPs) | **MetalLB** (speakers on workers) |
 | Who uses it | `kubectl`, Helm, Argo, kubelets | Browsers, Let's Encrypt HTTP-01 |
 | Port that matters | `6443` | `80` / `443` |
+| Router / firewall WAN forward | **Do not** expose this | **Yes** — DNAT 80/443 to `.30` |
 | In a MetalLB pool? | **No** | Yes — pool `ingress` `/32` |
+
+If you publish names to the internet, the router or firewall port-forward (or 1:1 NAT) for **80 and 443** must target the **ingress VIP** (`10.0.0.30` in the examples), not a worker, not a control plane, and not the API VIP. Ingress moves between workers the same way the API VIP moves between CPs; a forward to `.21` dies when that VM is down. Do not forward `6443` unless you intend to put the Kubernetes API on the WAN.
 
 Talos holds the API VIP on **one** control-plane NIC at a time. If that node dies or you shut it down, another CP takes the address (gratuitous ARP). Clients never change their kubeconfig.
 

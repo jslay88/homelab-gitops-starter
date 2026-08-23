@@ -15,3 +15,5 @@ kubectl -n nginx-ingress get svc nginx-ingress-controller
 # EXTERNAL-IP should be the ingress VIP (10.0.0.30 in the examples — not the API VIP)
 kubectl get ingressclass
 ```
+
+Router / firewall WAN forwards for **80 and 443** (public apps, Let's Encrypt HTTP-01) must point at this VIP, not a worker IP and not `.20`. See [addressing](../addressing.md).

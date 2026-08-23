@@ -82,7 +82,7 @@ flowchart TD
 3. The browser connects to that VIP with SNI `grafana.k8s.home.example.com`.
 4. nginx presents a leaf cert minted by Step-CA. The laptop must trust the **root**, not the leaf.
 
-Public names skip BIND and Step-CA: public DNS + Let's Encrypt HTTP-01 on port 80 of the same VIP (or a forwarded WAN IP).
+Public names skip BIND and Step-CA: public DNS + Let's Encrypt HTTP-01 on port 80 of the same VIP. The router/firewall WAN forward for 80/443 must target that **ingress VIP**, not a node and not the API VIP.
 
 ## Why these choices
 

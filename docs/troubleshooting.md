@@ -31,7 +31,7 @@
 
 ## ACME HTTP-01 fails
 
-- Ingress VIP not reachable on port 80 from the internet.
+- Ingress VIP not reachable on port 80 from the internet. WAN 80/443 must DNAT to the **ingress VIP** (`.30` in the examples), not a worker, not a CP, and not the API VIP (`.20`).
 - You used a `*.k8s.home.example.com` name. Let's Encrypt cannot see those. Use [Step-CA](step-ca.md).
 - Public DNS does not point at that VIP yet (chicken and egg: create the record once, then let external-dns or Cloudflare own it).
 - Production LE rate limits — use staging.
