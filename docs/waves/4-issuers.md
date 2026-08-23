@@ -14,6 +14,15 @@ Use the [staging ACME directory](https://letsencrypt.org/docs/staging-environmen
 
 HTTP-01 means: Let's Encrypt connects to `http://<name>/.well-known/acme-challenge/...` and that must hit **this** ingress VIP on port 80. On a typical homelab that is a WAN port-forward (or 1:1 NAT) of **80 → `10.0.0.30`**, not a node and not the API VIP. The name must already resolve in **public** DNS. A LAN-only name will sit in `Pending` forever.
 
+Every public Ingress needs:
+
+```yaml
+acme.cert-manager.io/http01-edit-in-place: "true"
+cert-manager.io/issue-temporary-certificate: "true"
+```
+
+Without edit-in-place, cert-manager spins up a **separate** solver Ingress. That object is not the LoadBalancer that owns the MetalLB `ingress` `/32`, and F5 nginx will not serve the challenge on the same host as your real Ingress. The challenge never reaches `.30`. Edit-in-place patches **your** Ingress instead. The temporary cert keeps nginx from ignoring the host while the secret is still empty. Details and a full example: [day-2](../day-2.md#public-ingress-lets-encrypt).
+
 **Skip** if you will not publish names. Delete `applications/letsencrypt.yaml`.
 
 **Verify:**

@@ -83,6 +83,8 @@ After sync: `dig +short my-app.k8s.home.example.com` from a laptop should be the
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
+    acme.cert-manager.io/http01-edit-in-place: "true"
+    cert-manager.io/issue-temporary-certificate: "true"
 spec:
   ingressClassName: nginx
   tls:
@@ -93,7 +95,11 @@ spec:
       # ...
 ```
 
-The name must resolve **on the internet** to whatever faces port 80 (hairpin or WAN). Staging first.
+`http01-edit-in-place` is required on this stack. Without it, cert-manager creates a **second** Ingress for `/.well-known/acme-challenge`. F5 nginx does not merge two Ingresses for the same host the way you need, and that solver object is not the Service that owns the pinned MetalLB `/32`. Let's Encrypt's HTTP-01 then never hits the ingress VIP. Edit-in-place adds the challenge path to **this** Ingress so port 80 on `.30` serves it.
+
+`issue-temporary-certificate` gives nginx a self-signed secret so the Ingress is accepted while ACME runs. Drop it and the controller may ignore the host until `tls.secretName` exists — which never happens, because the challenge never ran.
+
+The name must resolve **on the internet** to whatever faces port 80 (WAN DNAT to the ingress VIP). Staging first. Step-CA Ingresses do **not** need these two annotations.
 
 ## LAN hosts that are not Pods
 

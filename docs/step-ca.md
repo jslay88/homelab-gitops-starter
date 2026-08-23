@@ -146,7 +146,7 @@ spec:
                   number: 80
 ```
 
-For public names, keep `cert-manager.io/cluster-issuer: letsencrypt` and a hostname in the public zone.
+For public names, keep `cert-manager.io/cluster-issuer: letsencrypt` plus `acme.cert-manager.io/http01-edit-in-place: "true"` (and usually `issue-temporary-certificate`) so HTTP-01 hits the pinned L2 VIP. See [day-2](day-2.md#public-ingress-lets-encrypt).
 
 ### Standalone Certificate (NAS, IP SANs)
 

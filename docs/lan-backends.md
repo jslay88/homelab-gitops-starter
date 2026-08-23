@@ -173,6 +173,8 @@ Same Service + EndpointSlice. Different host and issuer. WAN **80/443** must alr
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: letsencrypt
+    acme.cert-manager.io/http01-edit-in-place: "true"
+    cert-manager.io/issue-temporary-certificate: "true"
     nginx.org/ssl-redirect: "true"
     nginx.org/http-redirect-code: "308"
     # plus nginx.org/ssl-services if the LAN hop is HTTPS
@@ -193,6 +195,8 @@ spec:
                 port:
                   name: http
 ```
+
+`http01-edit-in-place` is required here the same as for in-cluster apps: [day-2](day-2.md#public-ingress-lets-encrypt). Without it, the HTTP-01 solver Ingress does not share the pinned L2 VIP.
 
 Do not put the router or the NAS on a public name unless you mean anyone on the internet to reach that UI. HTTP-01 will not mint a cert for `*.k8s.home.example.com`.
 

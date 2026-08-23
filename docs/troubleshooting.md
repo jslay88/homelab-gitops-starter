@@ -39,6 +39,7 @@
 
 ## ACME HTTP-01 fails
 
+- Missing `acme.cert-manager.io/http01-edit-in-place: "true"` on the Ingress. On this L2 + F5 + pinned `/32` setup the default solver Ingress never shares the ingress VIP. See [day-2](day-2.md#public-ingress-lets-encrypt).
 - Ingress VIP not reachable on port 80 from the internet. WAN 80/443 must DNAT to the **ingress VIP** (`.30` in the examples), not a worker, not a CP, and not the API VIP (`.20`).
 - You used a `*.k8s.home.example.com` name. Let's Encrypt cannot see those. Use [Step-CA](step-ca.md).
 - Public DNS does not point at that VIP yet (chicken and egg: create the record once, then let external-dns or Cloudflare own it).
