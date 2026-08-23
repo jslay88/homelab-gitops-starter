@@ -49,6 +49,9 @@ markdown_extensions:
   - pymdownx.inlinehilite
   - pymdownx.snippets
 
+extra_css:
+  - stylesheets/extra.css
+
 nav:
   - Overview: index.md
   - Inventory: inventory.md

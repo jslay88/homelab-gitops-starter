@@ -27,26 +27,26 @@ flowchart TD
 ## Cluster vs Unraid (or any NAS)
 
 ```mermaid
-flowchart LR
-  subgraph unraid [Infra_hub]
-    Bind["BIND_RFC2136"]
-    StepCA["Step_CA"]
-    Minio["MinIO"]
-    Nfs["NFS_export"]
+flowchart TB
+  subgraph hub["Infra hub — Unraid or any NAS"]
+    direction TB
+    Bind[BIND RFC2136]
+    StepCA[Step-CA]
+    Minio[MinIO]
+    Nfs[NFS export]
   end
-  subgraph cluster [Talos_cluster]
-    Argo["Argo_CD"]
-    Mlb["MetalLB"]
-    Ing["nginx_ingress"]
-    Lh["Longhorn"]
-    Cm["cert_manager"]
-    Edns["external_dns"]
+  subgraph cluster["Talos cluster"]
+    direction TB
+    Edns[external-dns]
+    Cm[cert-manager]
+    Lh[Longhorn]
+    Mlb[MetalLB] --> Ing[nginx-ingress]
+    Argo[Argo CD]
   end
   Bind --> Edns
   StepCA --> Cm
   Minio --> Lh
-  Nfs --> cluster
-  Mlb --> Ing
+  Nfs --> Lh
 ```
 
 The hub can be Unraid, TrueNAS, or a spare VM. The cluster does not install BIND or MinIO for you.

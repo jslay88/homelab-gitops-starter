@@ -5,14 +5,14 @@ Let's Encrypt cannot issue a certificate for `grafana.k8s.home.example.com`. The
 This starter uses [Step-CA](https://smallstep.com/docs/step-ca/) **on Unraid** (or any always-on host) plus [step-issuer](https://github.com/smallstep/step-issuer) in the cluster. cert-manager asks the issuer; the issuer asks Step-CA; nginx presents the cert.
 
 ```mermaid
-flowchart LR
-  Ing["Ingress annotation"] --> CM["cert-manager"]
-  CM --> SI["step-issuer"]
-  SI --> CA["Step-CA on Unraid"]
+flowchart TB
+  Ing[Ingress annotation] --> CM[cert-manager]
+  CM --> SI[step-issuer]
+  SI --> CA[Step-CA on Unraid]
   CA --> SI
-  SI --> Secret["TLS Secret"]
-  Secret --> Nginx["nginx"]
-  Root["Root CA PEM"] --> Laptop["OS trust store"]
+  SI --> Secret[TLS Secret]
+  Secret --> Nginx[nginx]
+  Root[Root CA PEM] --> Laptop[OS trust store]
 ```
 
 Do **not** run Step-CA inside the same cluster as the only copy of the CA. If the cluster is down, you cannot mint or renew, and you have made restore harder. The NAS (or a small VM) is the right place.

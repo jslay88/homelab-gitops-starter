@@ -1,0 +1,5 @@
+/* Narrow content column: scroll wide diagrams instead of clipping. */
+.mermaid {
+  overflow-x: auto;
+  max-width: 100%;
+}
