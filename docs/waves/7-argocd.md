@@ -145,6 +145,14 @@ spec:
 
 ### Shared secret
 
+GitHub and Argo must share one random string. Generate it locally; do not reuse a PAT or invent a short password.
+
+```bash
+WEBHOOK_SECRET=$(openssl rand -hex 32)
+# keep it in the shell (or a password manager). You will paste the same
+# value into GitHub. Do not commit it or put it in values.yaml.
+```
+
 Helm `configs.secret.githubSecret` would put the token in values. Do not. Patch `argocd-secret` the same way as the admin password (combine keys in one SealedSecret if you want):
 
 ```bash
