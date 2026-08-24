@@ -23,7 +23,7 @@ Do **not** add workload charts to the public starter (`jslay88/homelab-gitops-st
 ## Annotations
 
 - LAN / Step-CA: `issuer` + `issuer-kind: StepClusterIssuer` + `issuer-group: certmanager.step.sm`. Not `cluster-issuer: step-issuer`.
-- Public / Let’s Encrypt: `cluster-issuer: letsencrypt` plus `acme.cert-manager.io/http01-edit-in-place: "true"` and `issue-temporary-certificate: "true"`.
+- Public / Let’s Encrypt: `cluster-issuer: letsencrypt` plus `acme.cert-manager.io/http01-edit-in-place: "true"` and `issue-temporary-certificate: "true"`. On a self-heal Application, `ignoreDifferences` that Ingress `/spec/rules` and set `RespectIgnoreDifferences=true`.
 - LAN host that is not a Pod: Service **without** selector + `EndpointSlice` (`discovery.k8s.io/v1`). See `docs/lan-backends.md`.
 
 ## Do not

@@ -38,7 +38,7 @@ Wave 2 cannot unlock the first clone — those manifests are *in* the private re
 ## Footguns
 
 - Step-CA Ingress: `issuer` + `issuer-kind: StepClusterIssuer` + `issuer-group: certmanager.step.sm`. **Not** `cluster-issuer: step-issuer`.
-- Let’s Encrypt: `acme.cert-manager.io/http01-edit-in-place: "true"` and usually `issue-temporary-certificate: "true"`.
+- Let’s Encrypt: `acme.cert-manager.io/http01-edit-in-place: "true"` and usually `issue-temporary-certificate: "true"`. Self-heal Applications must `ignoreDifferences` that Ingress `/spec/rules` (`RespectIgnoreDifferences=true`) or Argo strips the ACME path.
 - LAN backends: selector-less Service + **EndpointSlice** (`discovery.k8s.io/v1`). Not deprecated `Endpoints`.
 - Only **metallb** and **step-issuer** Applications ship as chart + raw manifests (three sources). `ref: values` is a file mount, not applied. Argo webhook Ingress / `argocd-secret` patch and Grafana `grafana-admin` get a third source in the **user’s copy**, not in this public repo.
 - SealedSecret that targets `argocd-secret` **must** set `sealedsecrets.bitnami.com/patch: "true"`. Replacing that Secret wipes Redis / server keys.

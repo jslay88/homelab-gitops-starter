@@ -199,7 +199,7 @@ spec:
                   name: http
 ```
 
-`http01-edit-in-place` is required here the same as for in-cluster apps: [day-2](day-2.md#public-ingress-lets-encrypt). Without it, the HTTP-01 solver Ingress does not share the pinned L2 VIP.
+`http01-edit-in-place` is required here the same as for in-cluster apps: [day-2](day-2.md#public-ingress-lets-encrypt). Without it, the HTTP-01 solver Ingress does not share the pinned L2 VIP. If Argo self-heals this Ingress, ignore `/spec/rules` on it or the ACME path disappears.
 
 Do not put the router or the NAS on a public name unless you mean anyone on the internet to reach that UI. HTTP-01 will not mint a cert for `*.k8s.home.example.com`.
 

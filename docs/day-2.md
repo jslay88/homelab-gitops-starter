@@ -43,6 +43,7 @@ spec:
       selfHeal: true
     syncOptions:
       - CreateNamespace=true
+      - RespectIgnoreDifferences=true
 ```
 
 Add a Namespace in `values/namespaces/` if you want PSS labels before the app syncs (wave 0).
@@ -104,7 +105,18 @@ spec:
 
 `issue-temporary-certificate` gives nginx a self-signed secret so the Ingress is accepted while ACME runs. Drop it and the controller may ignore the host until `tls.secretName` exists — which never happens, because the challenge never ran.
 
-The name must resolve **on the internet** to whatever faces port 80 (WAN DNAT to the ingress VIP). Staging first. Step-CA Ingresses do **not** need these two annotations.
+`selfHeal: true` will strip the ACME path cert-manager adds under `spec.rules`. Ignore that Ingress on the Application (same as [Argo webhook](waves/7-argocd.md#github-webhook)). `RespectIgnoreDifferences=true` is already on the example Application above.
+
+```yaml
+ignoreDifferences:
+  - group: networking.k8s.io
+    kind: Ingress
+    name: my-app   # metadata.name of the public Ingress
+    jsonPointers:
+      - /spec/rules
+```
+
+The name must resolve **on the internet** to whatever faces port 80 (WAN DNAT to the ingress VIP). Staging first. Step-CA Ingresses do **not** need these two annotations or this ignore.
 
 Argo’s GitHub webhook is the path-only version of this: a **second** public Ingress on `/api/webhook` Exact, UI stays on the LAN. [Wave 7](waves/7-argocd.md#github-webhook).
 

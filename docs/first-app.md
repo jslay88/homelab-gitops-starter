@@ -139,7 +139,7 @@ curl -vI https://whoami.k8s.home.example.com
 
 ## 4. Optional: public name
 
-Second Ingress (or a second host on the same one) with `cluster-issuer: letsencrypt`, `http01-edit-in-place`, `issue-temporary-certificate`. Public DNS + WAN 80 to `.30`. Staging first. [Day-2](day-2.md#public-ingress-lets-encrypt).
+Second Ingress (or a second host on the same one) with `cluster-issuer: letsencrypt`, `http01-edit-in-place`, `issue-temporary-certificate`. Public DNS + WAN 80 to `.30`. Staging first. If the Application self-heals, ignore that Ingress `/spec/rules` or Argo strips the ACME path. [Day-2](day-2.md#public-ingress-lets-encrypt).
 
 !!! success "Validation"
     Do not switch the ClusterIssuer to production ACME until: public `dig` for that hostname returns the **WAN** address (or the VIP if you 1:1 NAT), `curl -sI http://<public-name>/.well-known/acme-challenge/probe` hits **this** nginx (not a node), and a **staging** Certificate reached Ready. Production rate limits will punish a broken NAT.

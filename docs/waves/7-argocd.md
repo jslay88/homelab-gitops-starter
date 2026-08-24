@@ -30,6 +30,7 @@ server:
       cert-manager.io/issuer-kind: StepClusterIssuer
       cert-manager.io/issuer-group: certmanager.step.sm
       nginx.org/ssl-redirect: "true"
+      nginx.org/websocket-services: argocd-server
     hostname: argocd.k8s.home.example.com
     tls: true
     extraTls:
@@ -38,7 +39,7 @@ server:
         secretName: argocd-server-tls
 ```
 
-`server.insecure: true` means Argo serves HTTP to nginx; clients still see HTTPS. That is the usual split with this ingress. Do not also enable SSL passthrough unless you know you want it.
+`server.insecure: true` means Argo serves HTTP to nginx; clients still see HTTPS. That is the usual split with this ingress. Do not also enable SSL passthrough unless you know you want it. `websocket-services` keeps the UI live updates from falling back to polling.
 
 !!! success "Validation"
     Do not enable this Ingress until [DNS](../dns.md) `dig argocd.k8s.home.example.com` returns the ingress VIP and [step-issuer](4-issuers.md) is Ready. Then: Certificate `argocd-server-tls` Ready, browser with the [root](../step-ca.md) installed, padlock. If you only have port-forward, leave `ingress.enabled` off.
