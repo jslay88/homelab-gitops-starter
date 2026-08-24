@@ -43,16 +43,16 @@ The parent `platform` Application (`master-application.yaml`) is shape “manife
 | `nfs-provisioner` | 5 | Chart + values | nfs-subdir-external-provisioner | — |
 | `csi-s3` | 5 | Chart + values | csi-s3 | — |
 | `external-dns` | 6 | Manifests | — | Deployment + RBAC |
-| `argocd` | 7 | Chart + values | argo-cd | — |
+| `argocd` | 7 | Chart + values | argo-cd | Add a third `path: values/argocd/manifests` source when you seal the admin / webhook keys or add the public webhook Ingress ([wave 7](waves/7-argocd.md)). |
 | `metrics-server` | 8 | Chart + values | metrics-server | — |
 | `cloudnative-pg` | 8 | Chart only | cloudnative-pg | — |
 | `plugin-barman-cloud` | 9 | Chart only | plugin-barman-cloud | — |
 | `etcd-backup` | 9 | Manifests | — | suspended CronJob + ConfigMap |
-| `kube-prometheus-stack` | 10 | Chart + values | kube-prometheus-stack | — |
+| `kube-prometheus-stack` | 10 | Chart + values | kube-prometheus-stack | Add a third `path: values/kube-prometheus-stack/manifests` source for the sealed Grafana admin ([observability](observability.md#grafana-admin)). |
 
-Only **`metallb`** and **`step-issuer`** are chart + raw manifests. Everything else is one or the other.
+Only **`metallb`** and **`step-issuer`** ship as chart + raw manifests. Everything else starts as one or the other. You will add a third source on **`argocd`** and **`kube-prometheus-stack`** in **your** copy when you seal the admin / webhook objects — those files must not live in the public template.
 
-Why those two: the Helm chart installs a controller and CRDs. The thing you actually configure (address pools, the issuer that talks to Step-CA) is a **custom resource** the chart does not create for you. Leaving that CR in Helm values as a hacky template is worse than a third source.
+Why those two in the starter: the Helm chart installs a controller and CRDs. The thing you actually configure (address pools, the issuer that talks to Step-CA) is a **custom resource** the chart does not create for you. Leaving that CR in Helm values as a hacky template is worse than a third source.
 
 `letsencrypt` is the same *kind* of object (a `ClusterIssuer`) but there is no Let's Encrypt chart — only YAML — so it stays manifests-only and sits in its own wave after cert-manager CRDs exist.
 
@@ -114,7 +114,8 @@ Default to **chart + values** (two sources) or **manifests only** (LAN backends:
 Add a third `path: …/manifests` source only when:
 
 - the chart installs a controller/CRD, and
-- you need a cluster-specific CR the chart will never own (pool, issuer, `ObjectStore`, …).
+- you need a cluster-specific CR the chart will never own (pool, issuer, `ObjectStore`, …), **or**
+- you need a SealedSecret / extra Ingress next to a chart-owned object (Argo webhook + `argocd-secret` patch, Grafana `grafana-admin`).
 
 Do not put the Ingress for `my-app` in `values/nginx-ingress/manifests`. That would make the ingress Application own every host. Keep app CRs next to the app.
 

@@ -1,4 +1,6 @@
 # Minimal stack. No Alertmanager receivers (add Slack/Pushover yourself).
+# Grafana admin: do not set adminPassword here. Seal grafana-admin —
+# docs/observability.md#grafana-admin
 alertmanager:
   enabled: true
 

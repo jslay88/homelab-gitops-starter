@@ -1,4 +1,5 @@
-# Slim self-manage values. Add ingress / SSO later in your copy.
+# Slim self-manage values. LAN Ingress, named admin, GitHub webhook:
+# docs/waves/7-argocd.md  — do not put passwords or webhook secrets here.
 configs:
   params:
     application.resourceTrackingMethod: label

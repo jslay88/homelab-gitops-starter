@@ -6,7 +6,7 @@ Namespace `monitoring` is privileged (wave 0) because exporters and node compone
 
 The values file is minimal: default storage class (Longhorn), no Alertmanager receivers. Add Slack / Pushover / email yourself as SealedSecrets — do not copy someone else's pager config.
 
-**Must change (optional):** Grafana admin password (or let the chart generate one and rotate), retention, PVC size.
+**Must change (optional):** Grafana admin via a sealed Secret ([below](#grafana-admin)), retention, PVC size.
 
 !!! success "Validation"
     Before you add a Grafana Ingress:
@@ -15,6 +15,7 @@ The values file is minimal: default storage class (Longhorn), no Alertmanager re
     kubectl -n monitoring get pods   # prometheus, grafana, operator Ready
     kubectl port-forward -n monitoring svc/kube-prometheus-stack-grafana 3000:80
     # default user admin; password from Secret kube-prometheus-stack-grafana
+    # After you seal grafana-admin, log in as that user instead — see below.
     ```
 
     Login on `:3000` must work. An Ingress on top of a CrashLoop Grafana will look like a cert problem. For the hostname path, [first app](first-app.md) must already have succeeded.
@@ -35,7 +36,10 @@ When DNS + Step-CA work, add to `values/kube-prometheus-stack/values.yaml`:
 
 ```yaml
 grafana:
-  adminPassword: CHANGEME-or-delete-this-key-and-use-the-generated-secret
+  admin:
+    existingSecret: grafana-admin
+    userKey: admin-user
+    passwordKey: admin-password
   ingress:
     enabled: true
     ingressClassName: nginx
@@ -61,6 +65,25 @@ grafana:
 Prove it like [first app](first-app.md): `dig` → Certificate Ready → browser with the root.
 
 Do not put Grafana on a public Let's Encrypt name unless you mean the internet to see your cluster graphs.
+
+## Grafana admin
+
+Do not commit `grafana.adminPassword` in Helm values. The chart keeps reconciling that string, and a public fork would leak it.
+
+Point Grafana at a Secret (the Ingress example above already does). Delete any leftover `adminPassword:` / `adminUser:` keys once the Secret exists.
+
+```bash
+kubectl -n monitoring create secret generic grafana-admin \
+  --from-literal=admin-user=labadmin \
+  --from-literal=admin-password="$PASSWORD" \
+  --dry-run=client -o yaml \
+  | kubeseal --format=yaml --cert=pub-cert.pem \
+  > values/kube-prometheus-stack/manifests/sealed-secret-grafana-admin.yaml
+```
+
+The kube-prometheus-stack Application is **chart + values** today. Add `path: values/kube-prometheus-stack/manifests` as a third source (same as [MetalLB](argo-sources.md)) and list the SealedSecret in that directory’s `kustomization.yaml`. Sync, then log in as `labadmin`.
+
+Username is not secret; password is. Same sealing-key rules as [secrets](secrets.md). A leftover `admin` / `prom-operator` login means values still have `adminPassword` or the Secret was not mounted.
 
 ## Storage class
 

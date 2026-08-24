@@ -36,6 +36,13 @@ spec:
       kind: StatefulSet
       jsonPointers:
         - /status
+    # cert-manager edit-in-place adds the ACME HTTP-01 path; self-heal must not strip it.
+    # Harmless until you add the public webhook Ingress (docs/waves/7-argocd.md).
+    - group: networking.k8s.io
+      kind: Ingress
+      name: argocd-webhook
+      jsonPointers:
+        - /spec/rules
   syncPolicy:
     automated:
       prune: false

@@ -2,7 +2,8 @@
 name: seal-secret
 description: >-
   Seals a Kubernetes Secret with kubeseal for this cluster. Use when creating
-  a SealedSecret, repo-creds, TSIG, MinIO keys, or step-issuer password.
+  a SealedSecret, repo-creds, TSIG, MinIO keys, step-issuer password,
+  Argo admin/webhook patch, or Grafana admin.
 ---
 
 # Seal a Secret
@@ -31,6 +32,14 @@ kubectl create secret generic NAME -n NAMESPACE \
 ```
 
 Add the file to that directory’s `kustomization.yaml` `resources:`.
+
+## Patch `argocd-secret` (admin + webhook)
+
+Same name as the chart Secret. Annotation `sealedsecrets.bitnami.com/patch: "true"` on metadata **and** `spec.template.metadata`. Without it you wipe Redis / server keys. Keys: `accounts.<user>.password` (bcrypt), `accounts.<user>.passwordMtime`, `webhook.github.secret`. Docs: `docs/waves/7-argocd.md`.
+
+## Grafana admin
+
+New Secret `grafana-admin` in `monitoring` (`admin-user`, `admin-password`). No patch annotation. Point `grafana.admin.existingSecret` at it. Docs: `docs/observability.md`.
 
 ## Repo-creds
 

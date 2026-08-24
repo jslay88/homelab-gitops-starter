@@ -8,6 +8,21 @@ Private repo and no `repo-creds` Secret yet. Wave 2 cannot fix the first clone �
 
 Symptoms: `ComparisonError`, `authentication required`, `Repository not accessible`, empty `applications` after apply.
 
+## GitHub webhook to Argo returns 401 / 404 / timeout
+
+The UI stays on the LAN. Only `/api/webhook` is public. Full setup: [wave 7](waves/7-argocd.md#github-webhook).
+
+- **401:** `webhook.github.secret` in `argocd-secret` ≠ the GitHub webhook secret, or `argocd-server` was not restarted after the key appeared.
+- **404:** wrong path (must be Exact `/api/webhook`), or GitHub is hitting the LAN hostname / the UI Ingress.
+- **timeout:** public DNS is not the WAN address, or WAN 80/443 is not forwarded to the ingress VIP (`.30`).
+- Certificate stays Issuing: missing `http01-edit-in-place` on `argocd-webhook`, or Argo self-healed `/spec/rules` (that ignoreDifferences is already on `applications/argocd.yaml`).
+
+## Cannot log in to Argo or Grafana after rotating admin
+
+- Argo: extra account missing from `configs.cm` / RBAC, or you set `admin.enabled: "false"` before the sealed bcrypt landed. `argocd login --core` still works. [Wave 7](waves/7-argocd.md#admin-account).
+- Argo UI dead after a SealedSecret sync: you replaced `argocd-secret` instead of **patching** it (`sealedsecrets.bitnami.com/patch: "true"`). Redis / server keys are gone — restore from backup or let the chart recreate, then re-seal the patch only.
+- Grafana still wants `admin` / `prom-operator`: `adminPassword` is still in values, or Secret `grafana-admin` was not mounted. [Observability](observability.md#grafana-admin).
+
 ## Argo Application stuck OutOfSync
 
 - **Large CRDs:** set `ServerSideApply=true` (already on Argo CD, CNPG, kube-prometheus-stack).

@@ -16,6 +16,8 @@ Do this **before** editing YAML. Every `CHANGEME` in the repo maps to a row here
 | LAN resolver (DHCP DNS) | | `10.0.0.1` | Router / Pi-hole; must forward the cluster zone |
 | DNS zone (internal) | | `k8s.home.example.com` | BIND + external-dns + Step-CA names |
 | DNS zone (public, optional) | | `k8s.example.com` | Let's Encrypt hostnames |
+| Argo webhook hostname (optional) | | `argocd.example.com` | Public `/api/webhook` only. [Wave 7](waves/7-argocd.md#github-webhook). |
+| Argo / Grafana admin username | | `labadmin` | Values / Secret key. Password is sealed, not this table. |
 | BIND / RFC2136 host | | `10.0.0.2` | Authoritative for the internal zone |
 | TSIG key name | | `externaldns-key` | external-dns (seal the secret) |
 | ACME email | | `you@example.com` | Let's Encrypt ClusterIssuer |

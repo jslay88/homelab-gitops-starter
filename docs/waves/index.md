@@ -11,7 +11,7 @@ Each file in `applications/` is one Argo CD Application with `argocd.argoproj.io
 | 4 | `letsencrypt`, `step-issuer` | Keep the issuer you will use. LAN names need [Step-CA](../step-ca.md), not LE. |
 | 5 | `longhorn`, `nfs-provisioner`, `csi-s3` | NFS and csi-s3: yes |
 | 6 | `external-dns` | Updates BIND only. Zone + LAN forward: [DNS](../dns.md). |
-| 7 | `argocd` | No (self-manage) |
+| 7 | `argocd` | No (self-manage). LAN Ingress, named admin, GitHub webhook: [wave 7](7-argocd.md). |
 | 8 | `metrics-server`, `cloudnative-pg` | CNPG: yes until you need Postgres |
 | 9 | `plugin-barman-cloud`, `etcd-backup` | Yes |
 | 10 | `kube-prometheus-stack` | Recommended; delete the file to skip |

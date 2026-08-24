@@ -106,6 +106,8 @@ spec:
 
 The name must resolve **on the internet** to whatever faces port 80 (WAN DNAT to the ingress VIP). Staging first. Step-CA Ingresses do **not** need these two annotations.
 
+Argo’s GitHub webhook is the path-only version of this: a **second** public Ingress on `/api/webhook` Exact, UI stays on the LAN. [Wave 7](waves/7-argocd.md#github-webhook).
+
 ## LAN hosts that are not Pods
 
 Unraid, the router, a Pi, or any other box on the LAN is an Ingress → Service → **EndpointSlice** (not the deprecated `Endpoints` object). nginx still terminates TLS. Full walkthrough: [LAN apps behind Ingress](lan-backends.md).

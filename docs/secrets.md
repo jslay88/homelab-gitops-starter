@@ -76,6 +76,8 @@ Seal each of these **after** wave 1. Namespace must match. Key names must match 
 | Secret | Namespace | Keys | Used by |
 |--------|-----------|------|---------|
 | `repo-creds-github` (name yours) | `argocd` | `type`, `url`, `username`, `password` + label `argocd.argoproj.io/secret-type=repo-creds` | Argo pull of a **private** repo (recommended). |
+| `argocd-secret` (**patch**) | `argocd` | `accounts.labadmin.password`, `accounts.labadmin.passwordMtime`, `webhook.github.secret` | Named Argo login + GitHub webhook. Annotation `sealedsecrets.bitnami.com/patch: "true"` — do not replace this Secret. [Wave 7](waves/7-argocd.md). |
+| `grafana-admin` | `monitoring` | `admin-user`, `admin-password` | Grafana `admin.existingSecret`. [Observability](observability.md#grafana-admin). |
 | `step-issuer-provisioner-password` | `step-issuer` | `password` | `StepClusterIssuer` `provisioner.passwordRef` |
 | `tsig` | `external-dns` | `secret` (the TSIG secret bytes, not the key name) | external-dns `TSIG_SECRET` |
 | `longhorn-backup-s3` | `longhorn` | `AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`, `AWS_ENDPOINTS` (`http://10.0.0.2:9000`), optionally `AWS_REGION` | Longhorn `defaultBackupStore` |
@@ -106,6 +108,8 @@ kubectl -n step-issuer create secret generic step-issuer-provisioner-password \
 ```
 
 Add it to `values/step-issuer/manifests/kustomization.yaml` (that directory is already an Argo source).
+
+`argocd-secret` is different. The Helm chart already owns that object (Redis password, server keys). A SealedSecret with the same name **without** `sealedsecrets.bitnami.com/patch: "true"` wipes those keys and Argo dies. Patch only the extra keys ([wave 7](waves/7-argocd.md#admin-account)). Grafana `grafana-admin` is a **new** Secret — no patch annotation.
 
 Longhorn / MinIO: [backups](waves/9-backups.md). Same seal dance, namespace `longhorn`.
 

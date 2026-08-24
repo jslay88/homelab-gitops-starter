@@ -58,7 +58,7 @@ Port-forward if you want the UI before ingress exists:
 kubectl -n argocd port-forward svc/argocd-server 8080:443
 ```
 
-Open `https://localhost:8080` (self-signed — accept it). Username `admin`, password from the Secret above.
+Open `https://localhost:8080` (self-signed — accept it). Username `admin`, password from the Secret above. Treat that as bootstrap only — replace it with a named account after wave 7 ([admin](waves/7-argocd.md#admin-account)).
 
 !!! success "Validation"
     Do not create repo credentials until every pod in `argocd` is Ready and you can log into that UI. If the UI never loads, Argo is not up; a later Application will not save you.

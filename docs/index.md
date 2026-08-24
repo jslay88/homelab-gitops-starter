@@ -47,6 +47,7 @@ Two Applications are **chart + raw manifests** in one object (MetalLB pools, `St
 |------|---------|-----|-------------|
 | LAN only | `grafana.k8s.home.example.com` | Your BIND / router ([DNS](dns.md)) | [Step-CA](step-ca.md) |
 | Public | `app.k8s.example.com` | Public DNS | Let's Encrypt |
+| Public, path only | `argocd.example.com/api/webhook` | Public DNS | Let's Encrypt — UI stays on the LAN ([wave 7](waves/7-argocd.md#github-webhook)) |
 
 If you skip both BIND and Step-CA, you can still reach apps by IP or by `/etc/hosts`, with browser warnings. That is a worse lab.
 
