@@ -141,7 +141,21 @@ spec:
                   name: http
 ```
 
-`http01-edit-in-place` is required ([Let’s Encrypt](4-issuers.md), [day-2](../day-2.md#public-ingress-lets-encrypt)). `applications/argocd.yaml` already ignores this Ingress `/spec/rules` so self-heal does not strip cert-manager’s ACME solver path. After staging issues, switch the issuer to `letsencrypt`.
+`http01-edit-in-place` is required ([Let’s Encrypt](4-issuers.md), [day-2](../day-2.md#public-ingress-lets-encrypt)). cert-manager then **mutates** this Ingress: it adds `/.well-known/acme-challenge` under `spec.rules`. `selfHeal: true` will delete that path on the next sync unless you ignore it. The starter Application already has this; keep it if you rewrite `applications/argocd.yaml`:
+
+```yaml
+ignoreDifferences:
+  - group: networking.k8s.io
+    kind: Ingress
+    name: argocd-webhook
+    jsonPointers:
+      - /spec/rules
+syncPolicy:
+  syncOptions:
+    - RespectIgnoreDifferences=true
+```
+
+Name must match the Ingress (`argocd-webhook`). After staging issues, switch the issuer to `letsencrypt`.
 
 ### Shared secret
 
