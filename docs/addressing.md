@@ -82,7 +82,7 @@ Do not point `talosctl` at `.20`. The VIP needs etcd to exist. If etcd is the th
 
 ## Workers
 
-One worker is enough to learn GitOps. Longhorn `defaultReplicaCount` must be `1`. Two workers can do replica `2`. Three workers can do `3` (the usual Longhorn default).
+One worker is enough to learn GitOps. Longhorn `defaultReplicaCount` must be `1` on one worker and `3` when you have three schedulable disks. Do not set `2` as the default.
 
 Adding a worker is: new VM, same Image Factory disk, `worker.yaml` with a **new** address from `.21`–`.29`, `talosctl apply-config`. You do not re-bootstrap.
 

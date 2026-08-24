@@ -8,9 +8,7 @@ You almost always want **one** of these for day one, not neither.
 
 [Let's Encrypt](https://letsencrypt.org/docs/) [ClusterIssuer](https://cert-manager.io/docs/configuration/acme/) using [ACME HTTP-01](https://cert-manager.io/docs/configuration/acme/http01/) and ingress class `nginx`. Challenge type: [HTTP-01](https://letsencrypt.org/docs/challenge-types/#http-01-challenge).
 
-**Must change:** `email` in `values/letsencrypt/issuer.yaml`.
-
-Use the [staging ACME directory](https://letsencrypt.org/docs/staging-environment/) until a test Ingress on a **public** hostname succeeds, then switch `server` to production. Staging certs are not trusted by browsers; that is expected.
+**Must change:** `email` in `values/letsencrypt/issuer.yaml`. The template `server` is already the [staging ACME directory](https://letsencrypt.org/docs/staging-environment/). After a test Ingress on a **public** hostname reaches Ready, switch `server` to `https://acme-v02.api.letsencrypt.org/directory` and sync. There is **one** ClusterIssuer named `letsencrypt` — do not invent `letsencrypt-staging`. Staging certs are not trusted by browsers; that is expected.
 
 HTTP-01 means: Let's Encrypt connects to `http://<name>/.well-known/acme-challenge/...` and that must hit **this** ingress VIP on port 80. On a typical homelab that is a WAN port-forward (or 1:1 NAT) of **80 → `10.0.0.30`**, not a node and not the API VIP. The name must already resolve in **public** DNS. A LAN-only name will sit in `Pending` forever.
 
@@ -31,7 +29,7 @@ Without edit-in-place, cert-manager spins up a **separate** solver Ingress. That
     ```bash
     kubectl get clusterissuer letsencrypt
     kubectl describe clusterissuer letsencrypt
-    # Ready=True. If ACME registration failed, the email / directory URL is still CHANGEME or staging/prod is mixed up.
+    # Ready=True. If ACME registration failed, the email is still you@example.com or server is the wrong directory.
     ```
 
     HTTP-01 also needs [wave 3](3-ingress.md) EXTERNAL-IP and WAN 80 → that VIP. A Ready issuer with no public DNS is not enough to issue.

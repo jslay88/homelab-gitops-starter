@@ -8,15 +8,15 @@ description: >-
 
 # Add a day-2 Application
 
-Platform is waves 0–9. Apps start at wave **10**. Read `docs/day-2.md` and `docs/argo-sources.md`.
+Platform is waves 0–9 plus observability at wave 10. Apps start at wave **11**. Read `docs/day-2.md` and `docs/argo-sources.md`.
 
 ## Do this in the user's private copy
 
 Do **not** add workload charts to the public starter (`jslay88/homelab-gitops-starter` as published).
 
 1. Copy the Application shape from `docs/day-2.md` (`applications/my-app.yaml`).
-2. Two sources for chart + values (`ref: values` is **not** applied). Third `path: …/manifests` only if you need CRs the chart does not create.
-3. `repoURL` matches the other Applications (their private repo). `sync-wave: "10"` or higher.
+2. Two sources for chart + values (`ref: values` is **not** applied). Third `path: …/manifests` when you need a CR, SealedSecret, or extra Ingress the chart does not create.
+3. `repoURL` matches the other Applications (their private repo). `sync-wave: "11"` or higher.
 4. Namespace: add PSS labels in `values/namespaces/` if they should exist before the app (wave 0), or `CreateNamespace=true`.
 5. Ingress only after `docs/first-app.md` already worked.
 

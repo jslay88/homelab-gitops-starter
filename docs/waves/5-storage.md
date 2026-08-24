@@ -82,7 +82,7 @@ Use S3 as S3. Skip `applications/csi-s3.yaml` until you have a concrete object t
 | Workers with disks | Replica count |
 |--------------------|---------------|
 | 1 | `1` |
-| 2 | `2` (or 1 if you accept no extra copy) |
+| 2 | `1` (do not use `2` as the default — odd counts survive a disk loss without a split brain) |
 | 3+ | `3` |
 
 `preUpgradeChecker.jobEnabled: false` avoids a common first-sync failure.

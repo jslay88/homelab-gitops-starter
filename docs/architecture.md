@@ -16,13 +16,13 @@ flowchart TD
   W7["Wave 7: Argo CD self-manage"]
   W8["Wave 8: metrics-server + CNPG"]
   W9["Wave 9: Barman plugin + etcd snapshot"]
-  Obs["Observability: kube-prometheus-stack"]
+  Obs["Wave 10: kube-prometheus-stack"]
 
   W0 --> W1 --> W2 --> W3 --> W4
   W4 --> W5 --> W6 --> W7 --> W8 --> W9 --> Obs
 ```
 
-`kube-prometheus-stack` is wave **10** in some long-lived labs because it is “an app.” This starter treats it as part of the platform. See [observability](observability.md).
+`kube-prometheus-stack` is wave **10** and part of the platform. Day-2 workloads start at wave **11**. See [observability](observability.md).
 
 ## Cluster vs Unraid (or any NAS)
 

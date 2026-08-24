@@ -109,7 +109,7 @@ spec:
 
 ## 2. Application
 
-`applications/whoami.yaml` — manifests only, wave `10`. `path: values/whoami`. Same `repoURL` as the other Applications. `CreateNamespace` optional (the Namespace is in the kustomization).
+`applications/whoami.yaml` — manifests only, wave `11`. `path: values/whoami`. Same `repoURL` as the other Applications. `CreateNamespace` optional (the Namespace is in the kustomization).
 
 Push. Wait for the Application to go Healthy. Do not open a browser until the ladder below is green.
 
@@ -142,7 +142,7 @@ curl -vI https://whoami.k8s.home.example.com
 Second Ingress (or a second host on the same one) with `cluster-issuer: letsencrypt`, `http01-edit-in-place`, `issue-temporary-certificate`. Public DNS + WAN 80 to `.30`. Staging first. If the Application self-heals, ignore that Ingress `/spec/rules` or Argo strips the ACME path. [Day-2](day-2.md#public-ingress-lets-encrypt).
 
 !!! success "Validation"
-    Do not switch the ClusterIssuer to production ACME until: public `dig` for that hostname returns the **WAN** address (or the VIP if you 1:1 NAT), `curl -sI http://<public-name>/.well-known/acme-challenge/probe` hits **this** nginx (not a node), and a **staging** Certificate reached Ready. Production rate limits will punish a broken NAT.
+    Do not switch `letsencrypt` `server` to production ACME until: public `dig` for that hostname returns the **WAN** address (or the VIP if you 1:1 NAT), `curl -sI http://<public-name>/.well-known/acme-challenge/probe` hits **this** nginx (not a node), and a **staging** Certificate reached Ready. Production rate limits will punish a broken NAT. Same issuer name; only the directory URL changes ([wave 4](waves/4-issuers.md)).
 
 ## 5. Tear down
 

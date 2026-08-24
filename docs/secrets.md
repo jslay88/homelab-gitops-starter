@@ -24,6 +24,7 @@ The PAT Secret must already exist on the cluster **before** Argo can clone a pri
 
 ```bash
 # example: GitHub PAT for Argo (same name as the bootstrap Secret)
+kubectl -n argocd create secret generic repo-creds-github \
   --from-literal=type=git \
   --from-literal=url=https://github.com/YOUR_GITHUB \
   --from-literal=username=git \

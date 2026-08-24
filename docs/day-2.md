@@ -1,6 +1,6 @@
 # Day-2 apps
 
-Platform is waves 0–9 (+ observability). Your apps start at wave **10** or higher.
+Platform is waves 0–9 plus [observability](observability.md) at wave **10**. Your apps start at wave **11** or higher so they do not share a wave with kube-prometheus-stack.
 
 !!! success "Validation"
     Do not add a workload Ingress until [first app](first-app.md) already showed Certificate Ready, `dig` = ingress VIP, and a browser padlock. A second hostname on a broken path is not a test.
@@ -9,7 +9,7 @@ Do **not** add workload charts to this starter repo. Add a new Application in **
 
 ## Pattern
 
-Most day-2 apps are **chart + values** (two sources) or **manifests only**. Only add a third `path: …/manifests` source when a chart installs a controller and you still need a CR it will not create. Full table: [Application sources](argo-sources.md).
+Most day-2 apps are **chart + values** (two sources) or **manifests only**. Add a third `path: …/manifests` source when the chart will never own the object: a CR (pool, issuer, `ObjectStore`), a SealedSecret next to a chart-owned Secret, or an extra Ingress (Argo webhook). Full table: [Application sources](argo-sources.md).
 
 `applications/my-app.yaml`:
 
@@ -20,7 +20,7 @@ metadata:
   name: my-app
   namespace: argocd
   annotations:
-    argocd.argoproj.io/sync-wave: "10"
+    argocd.argoproj.io/sync-wave: "11"
 spec:
   project: default
   sources:

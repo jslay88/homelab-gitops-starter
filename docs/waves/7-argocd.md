@@ -105,7 +105,7 @@ Do **not** put the Argo UI on a public hostname for this. Add a **second** Ingre
 | | UI Ingress | Webhook Ingress |
 |---|---|---|
 | Hostname | LAN (`argocd.k8s.home.example.com`) | Public (`argocd.example.com`) |
-| Issuer | Step-CA | Let’s Encrypt (`letsencrypt-staging`, then `letsencrypt`) |
+| Issuer | Step-CA | Let’s Encrypt (`letsencrypt` — keep that issuer on **staging** until HTTP-01 works, [wave 4](4-issuers.md)) |
 | Paths | `/` (UI) | **`/api/webhook` Exact only** |
 | DNS | LAN A → ingress VIP | Public A/AAAA → WAN (port forward 80/443 → VIP) |
 
@@ -120,7 +120,7 @@ metadata:
   name: argocd-webhook
   namespace: argocd
   annotations:
-    cert-manager.io/cluster-issuer: letsencrypt-staging
+    cert-manager.io/cluster-issuer: letsencrypt
     acme.cert-manager.io/http01-edit-in-place: "true"
     cert-manager.io/issue-temporary-certificate: "true"
     nginx.org/ssl-redirect: "true"
@@ -156,7 +156,7 @@ syncPolicy:
     - RespectIgnoreDifferences=true
 ```
 
-Name must match the Ingress (`argocd-webhook`). After staging issues, switch the issuer to `letsencrypt`.
+Name must match the Ingress (`argocd-webhook`). After staging issues, flip the ClusterIssuer `server` to production ([wave 4](4-issuers.md)) and re-issue — the annotation stays `letsencrypt`.
 
 ### Shared secret
 

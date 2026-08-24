@@ -1,6 +1,6 @@
 # Agent instructions
 
-This is a **public GitHub template** of cluster-level GitOps (Argo CD App of Apps, waves 0–9). Workloads live in the user’s **private** copy, not here.
+This is a **public GitHub template** of cluster-level GitOps (Argo CD App of Apps, waves 0–10). Workloads live in the user’s **private** copy, not here.
 
 Cursor and Claude: read this file. Skills: `.cursor/skills/` (Cursor) and `.claude/skills/` (Claude Code). Human guide: `docs/ai-assistant.md`.
 
