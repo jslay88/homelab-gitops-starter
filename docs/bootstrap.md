@@ -160,5 +160,11 @@ Waves 0–2 should go Healthy first. Ingress (wave 3) needs MetalLB. Certificate
 
 Wave 7 adopts this Helm release into Git. After it syncs, change Argo CD by editing `values/argocd/values.yaml`, not by running `helm upgrade` on your laptop.
 
+Do **not** do these during this page. They need wave 1 (kubeseal), the LAN Ingress, and wave 7 Healthy. Full steps: [wave 7](waves/7-argocd.md).
+
+- **Named admin** — replace bootstrap `admin` / `argocd-initial-admin-secret` with a sealed local account, then disable `admin`. Log in as `admin` until that exists (step 2 and the repo UI check).
+- **GitHub webhook** — optional. Polling is enough to finish the waves. When you want push-to-sync, add a **public** Ingress that only serves `/api/webhook`. Keep the UI on the LAN.
+- **Grafana admin** — wave 10, not here. [Observability](observability.md#grafana-admin).
+
 !!! warning "Do not helm uninstall"
     The wave 7 Application owns the same release. `helm uninstall argocd` after Git took over will fight Argo.
