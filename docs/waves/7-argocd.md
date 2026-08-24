@@ -166,17 +166,22 @@ Same object, same `sealedsecrets.bitnami.com/patch: "true"`. Restart the server 
 
 ### GitHub
 
-GitOps repo → **Settings → Webhooks → Add webhook**:
+Do this on **your private GitOps copy**, not the public starter. You need admin on that repo. The webhook Ingress and sealed secret must already exist; GitHub will POST immediately when you save.
 
-- Payload URL: `https://argocd.example.com/api/webhook`
-- Content type: `application/json`
-- Secret: the same string you sealed
-- Events: **Just the push event**
+1. Open the repo on GitHub → **Settings** → **Webhooks** (under Code and automation) → **Add webhook**.
+2. **Payload URL:** `https://argocd.example.com/api/webhook` — the **public** hostname, path included. Not the LAN UI, not a trailing slash, not `/`.
+3. **Content type:** `application/json`. `application/x-www-form-urlencoded` will 400.
+4. **Secret:** the same `$WEBHOOK_SECRET` you just generated (paste it; GitHub will not show it again).
+5. **SSL verification:** Enable. Staging Let’s Encrypt is not trusted here — finish the production cert first, or GitHub will fail TLS.
+6. **Which events:** **Let me select individual events** → uncheck everything except **Pushes**. Pull requests and stars do not help Argo.
+7. Leave **Active** checked → **Add webhook**.
 
-GitHub must reach that URL from the internet. LAN-only DNS is not enough.
+GitHub must reach that URL from the internet. LAN-only DNS is not enough. An org-level webhook is optional; a repo webhook on this one repository is enough.
+
+After save: **Recent Deliveries** on that webhook. GitHub sends a ping. That ping should be HTTP **200**. Then `git push` on the GitOps repo and confirm a second delivery, and that the Application refreshed without waiting for the poll interval.
 
 !!! success "Validation"
-    `dig +short argocd.example.com` is the **WAN** address (or whatever GitHub will hit), not only the LAN VIP. Staging Certificate Ready, then production. GitHub → webhook → **Recent Deliveries**: HTTP **200**. 401 = secret mismatch. 404 = wrong path or Ingress. timeout = WAN / port forward. A `git push` on the GitOps repo refreshes the Application without waiting for the poll interval.
+    `dig +short argocd.example.com` is the **WAN** address (or whatever GitHub will hit), not only the LAN VIP. Production Certificate Ready before you enable SSL verification. GitHub → webhook → **Recent Deliveries**: HTTP **200**. 401 = secret mismatch. 404 = wrong path or Ingress. timeout = WAN / port forward. Red lock / TLS error = still on staging, or the name does not match the cert.
 
 ## Do not helm uninstall
 
