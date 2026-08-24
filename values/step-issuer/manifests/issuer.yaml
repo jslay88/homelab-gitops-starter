@@ -14,3 +14,4 @@ spec:
     passwordRef:
       name: step-issuer-provisioner-password
       key: password
+      namespace: step-issuer

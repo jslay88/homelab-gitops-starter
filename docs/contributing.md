@@ -33,8 +33,9 @@ Agents working in a clone must follow [AGENTS.md](https://github.com/jslay88/hom
     mkdocs serve
     ```
 
-4. `mkdocs build --strict` must pass (same as [Pages CI](https://github.com/jslay88/homelab-gitops-starter/actions)).
-5. Open a PR against `main`. Say **why**, not a file list. No agent trailers.
+4. `mkdocs build --strict` must pass (same as Pages CI).
+5. `./scripts/validate-yaml.sh` must pass (parse + kustomize build + kubeconform). Needs `python3` + PyYAML, `kubeconform`, and `kustomize` — the script downloads the last two into `.tools/` if they are missing.
+6. Open a PR against `main`. Say **why**, not a file list. No agent trailers.
 
 Do not commit `.env`, kubeconfig, `talosconfig`, or `secrets.yaml`. [SECURITY.md](https://github.com/jslay88/homelab-gitops-starter/blob/main/SECURITY.md).
 

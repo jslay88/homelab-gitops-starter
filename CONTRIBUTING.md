@@ -30,12 +30,13 @@ Open an issue on this repo before a large change. Small doc typos do not need on
 3. Preview:
 
    ```bash
-   pip install mkdocs-material
+   pip install mkdocs-material pyyaml
    mkdocs serve
    mkdocs build --strict
+   ./scripts/validate-yaml.sh
    ```
 
-4. PR against `main`. Say why. No agent trailers.
+4. PR against `main`. Say why. No agent trailers. CI runs the same YAML checks on every PR.
 
 Do not commit secrets, kubeconfig, `talosconfig`, or `talosctl gen secrets` output. See [SECURITY.md](SECURITY.md).
 

@@ -20,4 +20,4 @@ spec:
               command:
                 - /bin/sh
                 - -c
-                - echo "Suspended on purpose. Use: talosctl etcd snapshot ./etcd.snapshot"
+                - 'echo Suspended on purpose. Run talosctl etcd snapshot.'
